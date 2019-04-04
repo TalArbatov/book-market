@@ -1,0 +1,19 @@
+{
+  "name": "book-market",
+  "version": "1.0.0",
+  "description": "A simple application using React/Redux/Express/MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TalArbatov/book-market.git"
+  },
+  "author": "Tal Arbetov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TalArbatov/book-market/issues"
+  },
+  "homepage": "https://github.com/TalArbatov/book-market#readme"
+}
