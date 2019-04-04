@@ -65,3 +65,35 @@ export const signupError = () => {
     type: TYPES.USER_SIGNUP_ERROR
   };
 };
+
+export const logout = () => {
+  return dispatch => {
+    dispatch(logoutRequest());
+    return axios.get('/api/auth/logout').then(res => {
+      if(res.data.success) {
+        dispatch(logoutSuccess());
+        return {success: true}
+      }
+      else {
+        dispatch(logoutError());
+        return {success: false}
+      }
+    })
+  } 
+}
+
+export const logoutRequest = () => {
+  return {
+    type: TYPES.USER_LOGOUT_REQUEST
+  }
+}
+export const logoutError = () => {
+  return {
+    type: TYPES.USER_LOGOUT_ERROR
+  }
+}
+export const logoutSuccess = () => {
+  return {
+    type: TYPES.USER_LOGOUT_SUCCESS
+  }
+}

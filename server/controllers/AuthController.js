@@ -51,5 +51,9 @@ module.exports = {
         })
       }
     })
+  },
+  logout: (req,res,next) => {
+    //TODO: implement logout
+    res.send({success: true})
   }
 }

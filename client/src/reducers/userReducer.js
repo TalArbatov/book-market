@@ -9,7 +9,9 @@ const defaultState = {
 const userReducer = (state = defaultState, action) => {
   switch (action.type) {
     case TYPES.USER_SIGNUP_REQUEST:
+    case TYPES.USER_LOGOUT_REQUEST:
       return { ...state, isLoading: true };
+    case TYPES.USER_LOGOUT_ERROR:
     case TYPES.USER_SIGNUP_ERROR:
     case TYPES.USER_LOGIN_ERROR:
     case TYPES.USER_SIGNUP_SUCCESS:
@@ -21,6 +23,8 @@ const userReducer = (state = defaultState, action) => {
         authenticated: true,
         user: action.payload
       };
+      case TYPES.USER_LOGOUT_SUCCESS:
+        return {...state, isLoading: false, authenticated: false, user: {}}
     default:
       return state;
   }

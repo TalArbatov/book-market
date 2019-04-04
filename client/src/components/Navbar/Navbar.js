@@ -3,6 +3,7 @@ import styled from "styled-components";
 import NavbarButtons from "./NavbarButtons";
 import { connect } from "react-redux";
 import AccountButtons from './AccountButtons';
+import * as ACTIONS from '../../actions/userActions';
 
 const Wrapper = styled.div`
   background: #4c394e;
@@ -37,7 +38,7 @@ const Navbar = props => {
     <Wrapper>
       <ButtonWrapper>
         <NavbarButtons buttons={leftButtons} />
-        <AccountButtons user={props.userReducer.user} authenticated={props.userReducer.authenticated}/>
+        <AccountButtons user={props.userReducer.user} authenticated={props.userReducer.authenticated} logout={() => {props.logout().then(res => {console.log(res)})}}/>
       </ButtonWrapper>
     </Wrapper>
   );
@@ -49,7 +50,9 @@ const mapStateToProps = state => {
   };
 };
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    logout: () => dispatch(ACTIONS.logout())
+  };
 };
 
 export default connect(

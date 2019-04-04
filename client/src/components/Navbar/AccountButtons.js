@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { PromiseProvider } from "mongoose";
 
 const Wrapper = styled.div`
 display:inline-block;
@@ -47,9 +48,14 @@ a {
 p {
   font-weight:bold;  
 }
+li > div {
+  height:100%;
+  display:flex;
+  align-items:center;
+}
 `;
 
-const AccountButtons = ({ user, authenticated }) => {
+const AccountButtons = ({ user, authenticated, logout }) => {
   return (
     <Wrapper>
       <ul>
@@ -72,7 +78,7 @@ const AccountButtons = ({ user, authenticated }) => {
         </li>
         {authenticated ? (
           <li>
-            <Link to="/">Logout</Link>
+            <div onClick={logout}>Logout</div>
           </li>
         ) : (
           <li>
