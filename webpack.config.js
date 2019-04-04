@@ -7,7 +7,7 @@ module.exports = {
     filename: 'bundle.js',
     path: publicPath
   },
-  mode: 'developmnet',
+  mode: 'development',
   module: {
     rules: [{
       loader: 'babel-loader',
