@@ -3,16 +3,24 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-display:inline-block;
-margin-left:18px;
-height:100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
   a {
     color: #efefef;
     text-decoration: none;
-    font-size:1.2em
+    font-size: 1.2em;
   }
   li {
-    display: inline-block;
+    padding: 0 15px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  li:hover {
+    background: #5a445c;
+    transition: 0.1s;
   }
 `;
 const NavbarButton = ({ button }) => {

@@ -4,6 +4,9 @@ import styled from "styled-components";
 
 
 const Wrapper = styled.div`
+height:100%;
+align-items:center;
+display:flex;
   ul {
     list-style-type: none;
     margin:0;
@@ -13,6 +16,8 @@ const Wrapper = styled.div`
     flex-direction: row;
     flex-wrap: no-wrap;
     justify-content: left;
+    height:100%;
+    align-items:center;
 
 
   }
