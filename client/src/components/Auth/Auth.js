@@ -4,6 +4,7 @@ import Signup from './Signup';
 import styled from 'styled-components';
 import {connect} from 'react-redux';
 import * as ACTIONS from '../../actions/userActions';
+
 const MainWindow = styled.div`
 padding:60px 15px;
 border-left: 5px solid #4c394e;
@@ -14,7 +15,7 @@ display: flex;
 flex-direction:row;
 justify-content: space-evenly;
 `
-/** */
+
 const submitSignup = (form) => {
 
 }

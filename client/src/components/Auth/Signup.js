@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
+import Checkbox from "@material-ui/core/Checkbox";
+import { Link } from "react-router-dom";
 
 const defaultState = {
   form: {
@@ -12,12 +14,28 @@ const defaultState = {
     password: "",
     confirmPassword: ""
   },
-  err: ""
+  err: "",
+  termsAgreed: false
 };
+
+const ButtonWrapper = styled.div`
+  button {
+    padding: 8px 18px;
+    background: #815386;
+    border-radius: 4px;
+    color: #efefef;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 100;
+  }
+  button:hover {
+    background: #4c394e;
+  }
+`;
 
 const styles = {
   root: {
-    margin: '3px'
+    margin: "3px"
   }
 };
 
@@ -41,6 +59,8 @@ const Signup = props => {
       err = "Password must be at least 4 characters long.";
     else if (form.password != form.confirmPassword)
       err = "Passwords dont match.";
+    else if (!getState.termsAgreed)
+      err = "Please agree to the terms and conditions";
     if (err) return setState({ ...getState, error: err });
     else {
       setState({ ...getState, error: "" });
@@ -51,11 +71,10 @@ const Signup = props => {
     console.log("submiting form");
     props.submit(getState.form).then(res => {
       console.log(res);
-      if(!res.success) {
-        console.log('FAILURE')
-        setState({...getState, error: res.error})
-      }
-      else console.log('success!!!')
+      if (!res.success) {
+        console.log("FAILURE");
+        setState({ ...getState, error: res.error });
+      } else console.log("success!!!");
     });
   };
   return (
@@ -72,7 +91,6 @@ const Signup = props => {
                 margin="normal"
                 variant="outlined"
                 classes={{ root: classes.root }}
-
                 onChange={e => updateForm(e.target.value, "firstName")}
               />
             </td>
@@ -99,7 +117,6 @@ const Signup = props => {
                 margin="normal"
                 variant="outlined"
                 classes={{ root: classes.root }}
-
                 onChange={e => updateForm(e.target.value, "email")}
               />{" "}
             </td>
@@ -113,7 +130,6 @@ const Signup = props => {
                 type="password"
                 margin="normal"
                 classes={{ root: classes.root }}
-
                 variant="outlined"
                 onChange={e => updateForm(e.target.value, "password")}
               />{" "}
@@ -129,14 +145,27 @@ const Signup = props => {
                 variant="outlined"
                 type="password"
                 classes={{ root: classes.root }}
-
                 onChange={e => updateForm(e.target.value, "confirmPassword")}
               />{" "}
             </td>
           </tr>
         </tbody>
       </table>
-      <button onClick={validateForm}>Sign up</button>
+      <div>
+        <Checkbox
+          checked={getState.termsAgreed}
+          onChange={() => {
+            getState.termsAgreed
+              ? setState({ ...getState, termsAgreed: false })
+              : setState({ ...getState, termsAgreed: true });
+          }}
+          value="checkedA"
+        />
+        <label>i agree to the <Link to='/terms'>terms and conditions</Link></label>
+      </div>
+      <ButtonWrapper>
+        <button onClick={validateForm}>Sign up</button>
+      </ButtonWrapper>
       <p style={{ color: "red" }}>{getState.error}</p>
     </div>
   );

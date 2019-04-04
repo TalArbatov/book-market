@@ -39,6 +39,9 @@ li:hover:not(:first-child) {
 a {
   color: #efefef;
   text-decoration: none;
+  height:100%;
+  display:flex;
+  align-items:center;
 
 }
 p {
@@ -46,13 +49,13 @@ p {
 }
 `;
 
-const AccountButtons = ({ user }) => {
+const AccountButtons = ({ user, authenticated }) => {
   return (
     <Wrapper>
       <ul>
-        {user.authenticated ? (
+        {authenticated ? (
           <li>
-            <p>Hello New User</p>
+            <p>Hello {user.firstName} {user.lastName}</p>
           </li>
         ) : (
           <li />
@@ -67,13 +70,13 @@ const AccountButtons = ({ user }) => {
         <li>
           <Link to="/wishlist">My Account</Link>
         </li>
-        {user.authenticated ? (
+        {authenticated ? (
           <li>
             <Link to="/">Logout</Link>
           </li>
         ) : (
           <li>
-            <Link to="/login">Login/Signup</Link>
+            <Link to="/login">Login / Signup</Link>
           </li>
         )}
       </ul>

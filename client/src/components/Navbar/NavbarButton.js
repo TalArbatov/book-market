@@ -10,6 +10,9 @@ const Wrapper = styled.div`
     color: #efefef;
     text-decoration: none;
     font-size: 1.2em;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
   li {
     padding: 0 15px;
