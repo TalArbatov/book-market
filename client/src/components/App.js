@@ -1,9 +1,14 @@
 import React from 'react';
+import {Route, Switch} from 'react-router-dom'
 
 const App = props => {
   return(
+    
     <div>
-      <h1>App</h1>
+      <Switch>
+        <Route exact path='/' component={() => <h1>Head</h1>}></Route>
+
+      </Switch>
     </div>
   )
 }
