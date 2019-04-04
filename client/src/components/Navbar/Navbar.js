@@ -37,7 +37,7 @@ const Navbar = props => {
     <Wrapper>
       <ButtonWrapper>
         <NavbarButtons buttons={leftButtons} />
-        <AccountButtons user={{authenticated:true}}/>
+        <AccountButtons user={{authenticated:false}}/>
       </ButtonWrapper>
     </Wrapper>
   );

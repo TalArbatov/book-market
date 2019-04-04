@@ -24,12 +24,13 @@ li {
   align-items:center;
   padding-right:10px;
   padding-left:10px;
+  cursor:pointer;
 }
 li:first-child {
-  cursor:default;
+  cursor:default !important;
 }
 li:not:(:first-child) {
-  cursor:pointer;
+  
 }
 li:hover:not(:first-child) {
   background: #5a445c;
@@ -45,11 +46,18 @@ p {
 }
 `;
 
-const AccountButtons = ({user}) => {
+const AccountButtons = ({ user }) => {
   return (
     <Wrapper>
       <ul>
-        <li><p>Hello New User</p></li>
+        {user.authenticated ? (
+          <li>
+            <p>Hello New User</p>
+          </li>
+        ) : (
+          <li />
+        )}
+
         <li>
           <Link to="/wishlist">Wishlist</Link>
         </li>
@@ -59,14 +67,15 @@ const AccountButtons = ({user}) => {
         <li>
           <Link to="/wishlist">My Account</Link>
         </li>
-      {user.authenticated ? <li>
-          <Link to="/">Logout</Link>
-        </li> :
-       <li>
-       <Link to="/">Login/Signup</Link>
-     </li>}
-        
-
+        {user.authenticated ? (
+          <li>
+            <Link to="/">Logout</Link>
+          </li>
+        ) : (
+          <li>
+            <Link to="/login">Login/Signup</Link>
+          </li>
+        )}
       </ul>
     </Wrapper>
   );
