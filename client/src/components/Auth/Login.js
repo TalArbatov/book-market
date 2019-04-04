@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
+import TextField from "@material-ui/core/TextField";
+import { withStyles } from '@material-ui/core/styles';
 
 const defaultForm = {
   email: '',
@@ -21,13 +23,28 @@ const Login = props => {
       <table>
         <tbody>
           <tr>
-            <td><label>Email: </label></td>
-            <td><input type='text' onChange={e => updateForm(e.target.value, 'email')}></input></td>
+          <TextField
+                required
+                id="outlined-required"
+                label="Email"
+                margin="normal"
+                variant="outlined"
+                classes={{ root: classes.root }}
+
+                onChange={e => updateForm(e.target.value, "email")}
+              />
           </tr>
           <tr>
-            <td><label>Password: </label></td>
-            <td><input type='password' onChange={e => updateForm(e.target.value, 'password')}></input></td>
-          </tr>
+            <TextField
+                required
+                id="outlined-required"
+                label="Password"
+                margin="normal"
+                variant="outlined"
+                classes={{ root: classes.root }}
+
+                onChange={e => updateForm(e.target.value, "password")}
+              />          </tr>
         </tbody>
       </table>
       <button onClick={submitForm}>Login</button>

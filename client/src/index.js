@@ -12,6 +12,10 @@ body {
   padding: 0;
   font-family: Gisha;
   min-height:100vh;
+  
+}
+.MuiOutlinedInput-input-32 {
+  padding:14px !important;
 }
 `;
 
