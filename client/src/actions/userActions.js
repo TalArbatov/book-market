@@ -39,6 +39,7 @@ export const signup = form => {
     console.log(form);
     dispatch(signupRequest());
     return axios.post("/api/auth/signup", form).then(res => {
+      console.log(res.data)
       if (res.data.success) {
         dispatch(signupSuccess());
         return { success: true };
