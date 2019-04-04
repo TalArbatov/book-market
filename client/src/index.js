@@ -10,6 +10,7 @@ const GlobalStyle = createGlobalStyle`
 body {
   margin: 0;
   padding: 0;
+  font-family: Gisha;
 }
 `;
 
@@ -17,8 +18,8 @@ const store = configStore();
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <GlobalStyle/>
-        <App />
+      <GlobalStyle />
+      <App />
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")
