@@ -23,7 +23,7 @@ const Auth = props => {
   return(
     <MainWindow>
       <Signup submit={(form) => {return props.signup(form)}}/>
-      <Login />
+      <Login submit={(form) =>{return props.login(form)}}/>
     </MainWindow>
   )
 }
@@ -35,7 +35,9 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
   return {
-    signup : (form) => dispatch(ACTIONS.signup(form))
+    signup : (form) => dispatch(ACTIONS.signup(form)),
+    login : (form) => dispatch(ACTIONS.login(form))
+
   }
 }
 

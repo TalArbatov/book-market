@@ -35,5 +35,21 @@ module.exports = {
     }
 //user.comparePassword(password, (err, isMatch) => {})
     
+  },
+  login: (req,res,next) => {
+    console.log(req.body);
+    const {email,password} = req.body
+    User.findOne({email}, (err, user) => {
+      if(!user) res.send({success: false, error: 'Non-existent User.'})
+      else {
+        user.comparePassword(password, (err, isMatch) => {
+          if(err) res.send({success: false, error: 'General Error'})
+          else if(!isMatch) res.send({success: false, error: 'Invalid Password.'})
+          else {
+            res.send({success:true, payload: user})
+          }
+        })
+      }
+    })
   }
 }
