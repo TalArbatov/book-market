@@ -7,7 +7,7 @@ export const login = form => {
     return axios.post('/api/auth/login', form).then(res => {
       console.log(res.data);
       if(res.data.success) {
-        dispatch(loginSuccess(res.data.payload));
+        dispatch(loginSuccess(res.data.payload, res.data.token));
         return {success: true}
       }
       else {
@@ -28,10 +28,13 @@ export const loginError = () => {
     type: TYPES.USER_LOGIN_ERROR
   };
 };
-export const loginSuccess = user => {
+export const loginSuccess = (user, token) => {
   return {
     type: TYPES.USER_LOGIN_SUCCESS,
-    payload: user
+    payload: {
+      user,
+      token
+    }
   };
 };
 export const signup = form => {

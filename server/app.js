@@ -11,6 +11,8 @@ mongoose.connect(DB_ADDRESS, { useNewUrlParser: true }, err => {
   else console.log(`MONGO_DB: Connected to: ${DB_ADDRESS}`);
 });
 require("./models/UserSchema");
+//CONFIG passport
+require('./passport');
 
 //CONFIG express
 const PORT = process.env.PORT || 3000;

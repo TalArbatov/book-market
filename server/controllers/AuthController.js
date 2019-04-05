@@ -1,9 +1,21 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
-const JWT = require("jsonwebtoken");
-
+//const JWT = require("jsonwebtoken");
+const authHelper = require("../helpers/authHelper");
 module.exports = {
+  loginSuccess: (req, res, next) => {
+    console.log("successful login");
+    User.findOne({ email: req.body.email }, (err, user) => {
+      if (!user) res.send({ success: false, error: "Weird...!" });
+      else {
+        const token = authHelper.signJWT(user._id)
+        res.send({ success: true, payload: user , token});
+      }
+    });
+    //AuthController.login(req, res, next);
+  },
+
   signup: (req, res, next) => {
     //VALIDATE CREDENTIALS IN CLIENT + SERVER
     const form = req.body;
@@ -33,40 +45,33 @@ module.exports = {
             password
           });
           newUser.save();
-          //generate JW token
-          const JWT_SECRET = process.env.JWT_SECRET;
-          const token = JWT.sign(
-            {
-              iss: "TalArbetov",
-              sub: newUser._id,
-              iat: new Date().getTime(),
-              exp: new Date().setDate(new Date().getDate() + 1)
-            },
-            JWT_SECRET
-          );
+          //sign JWT token
+          const token = authHelper.signJWT;
           res.send({ success: true, token });
         }
       });
     }
     //user.comparePassword(password, (err, isMatch) => {})
   },
-  login: (req, res, next) => {
-    console.log(req.body);
-    const { email, password } = req.body;
-    User.findOne({ email }, (err, user) => {
-      if (!user) res.send({ success: false, error: "Non-existent User." });
-      else {
-        user.comparePassword(password, (err, isMatch) => {
-          if (err) res.send({ success: false, error: "General Error" });
-          else if (!isMatch)
-            res.send({ success: false, error: "Invalid Password." });
-          else {
-            res.send({ success: true, payload: user });
-          }
-        });
-      }
-    });
-  },
+  // login: (req, res, next) => {
+  //   console.log(req.body);
+  //   const { email, password } = req.body;
+  //   User.findOne({ email }, (err, user) => {
+  //     if (!user) res.send({ success: false, error: "Non-existent User." });
+  //     else {
+  //       user.comparePassword(password, (err, isMatch) => {
+  //         if (err) res.send({ success: false, error: "General Error" });
+  //         else if (!isMatch)
+  //           res.send({ success: false, error: "Invalid Password." });
+  //         else {
+  //           //sign JWT token
+  //           const token = authHelper.signJWT;
+  //           res.send({ success: true, payload: user, token });
+  //         }
+  //       });
+  //     }
+  //   });
+  // },
   logout: (req, res, next) => {
     //TODO: implement logout
     res.send({ success: true });
