@@ -1,13 +1,13 @@
 import * as TYPES from "./actionTypes";
 import axios from "axios";
-
+import setAuthorizationToken from '../utils/setAuthorizationToken';
 export const login = form => {
   return dispatch => {
     dispatch(loginRequest());
     return axios.post('/api/auth/login', form).then(res => {
       console.log(res.data);
       if(res.data.success) {
-        dispatch(loginSuccess(res.data.payload, res.data.token));
+        dispatch(loginSuccess(res.data.token));
         return {success: true}
       }
       else {
@@ -28,12 +28,17 @@ export const loginError = () => {
     type: TYPES.USER_LOGIN_ERROR
   };
 };
-export const loginSuccess = (user, token) => {
+export const loginSuccess = (token) => {
+  //add token to localStorage
+  localStorage.token = token;
+  setAuthorizationToken(token);
+  console.log('inside loginSuccess action: next line')
+  console.log('token: ' + token)
   return {
     type: TYPES.USER_LOGIN_SUCCESS,
     payload: {
-      user,
-      token
+    
+      userJWT: require('jsonwebtoken').decode(token)
     }
   };
 };

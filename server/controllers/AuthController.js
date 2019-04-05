@@ -9,7 +9,7 @@ module.exports = {
     User.findOne({ email: req.body.email }, (err, user) => {
       if (!user) res.send({ success: false, error: "Weird...!" });
       else {
-        const token = authHelper.signJWT(user._id)
+        const token = authHelper.signJWT(user)
         res.send({ success: true, payload: user , token});
       }
     });
@@ -46,7 +46,7 @@ module.exports = {
           });
           newUser.save();
           //sign JWT token
-          const token = authHelper.signJWT;
+          const token = authHelper.signJWT(user);
           res.send({ success: true, token });
         }
       });

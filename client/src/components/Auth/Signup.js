@@ -86,7 +86,6 @@ const Signup = props => {
             <td>
               <TextField
                 required
-                id="outlined-required"
                 label="First Name"
                 margin="normal"
                 variant="outlined"
@@ -99,7 +98,6 @@ const Signup = props => {
             <td>
               <TextField
                 required
-                id="outlined-required"
                 label="Last Name"
                 margin="normal"
                 variant="outlined"
@@ -112,7 +110,6 @@ const Signup = props => {
             <td>
               <TextField
                 required
-                id="outlined-required"
                 label="Email"
                 margin="normal"
                 variant="outlined"
@@ -125,7 +122,6 @@ const Signup = props => {
             <td>
               <TextField
                 required
-                id="outlined-required"
                 label="Password"
                 type="password"
                 margin="normal"
@@ -139,7 +135,6 @@ const Signup = props => {
             <td>
               <TextField
                 required
-                id="outlined-required"
                 label="Confirm Password"
                 margin="normal"
                 variant="outlined"

@@ -17,12 +17,11 @@ const userReducer = (state = defaultState, action) => {
     case TYPES.USER_SIGNUP_SUCCESS:
       return { ...state, isLoading: false };
     case TYPES.USER_LOGIN_SUCCESS:
-      localStorage.token = action.payload.token
       return {
         ...state,
         isLoading: false,
         authenticated: true,
-        user: action.payload.user
+        user: action.payload.userJWT
       };
       case TYPES.USER_LOGOUT_SUCCESS:
         return {...state, isLoading: false, authenticated: false, user: {}}

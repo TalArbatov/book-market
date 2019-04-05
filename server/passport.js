@@ -17,7 +17,7 @@ passport.use(
       console.log('inside paassport jwt');
       try {
         //find the user specified in token
-        User.findOne({ _id: payload.sub }, (err, user) => {
+        User.findOne({ _id: payload._id }, (err, user) => {
           //if user doesn't exist, handle it
           console.log('payload')
           console.log(payload)

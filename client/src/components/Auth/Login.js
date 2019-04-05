@@ -47,7 +47,7 @@ const Login = props => {
     props.submit(getState.form).then(res => {
       if (res.success) {
         props.history.push("/");
-        setState(defaultState);
+        //setState(defaultState);
       } else setState({ ...getState, error: "Invalid Credentials." });
     });
   };
@@ -58,27 +58,30 @@ const Login = props => {
       <table>
         <tbody>
           <tr>
-            <TextField
-              required
-              id="outlined-required"
-              label="Email"
-              margin="normal"
-              variant="outlined"
-              classes={{ root: classes.root }}
-              onChange={e => updateForm(e.target.value, "email")}
-            />
+            <td>
+              <TextField
+                required
+                label="Email"
+                margin="normal"
+                variant="outlined"
+                classes={{ root: classes.root }}
+                onChange={e => updateForm(e.target.value, "email")}
+              />
+            </td>
           </tr>
+
           <tr>
-            <TextField
-              required
-              id="outlined-required"
-              label="Password"
-              margin="normal"
-              variant="outlined"
-              type={getState.showPassword ? "text" : "password"}
-              classes={{ root: classes.root }}
-              onChange={e => updateForm(e.target.value, "password")}
-            />{" "}
+            <td>
+              <TextField
+                required
+                label="Password"
+                margin="normal"
+                variant="outlined"
+                type={getState.showPassword ? "text" : "password"}
+                classes={{ root: classes.root }}
+                onChange={e => updateForm(e.target.value, "password")}
+              />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -96,6 +99,7 @@ const Login = props => {
       </div>
       <ButtonWrapper>
         <button onClick={submitForm}>Login</button>
+        <button onClick={props.secret}>Secret</button>
       </ButtonWrapper>
       <p style={{ color: "red" }}>{getState.error}</p>
     </div>
