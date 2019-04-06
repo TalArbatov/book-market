@@ -56,7 +56,7 @@ const PostPreview = ({ post }) => {
       <td>
         <PostWrapper>
           <VotePostWrapper>
-          <VotePost />
+          <VotePost postID={post._id} votes={post.votes} currentUserVote={post.currentUserVote}/>
           </VotePostWrapper>
           <PostContents>
             <PostHeader>

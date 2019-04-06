@@ -11,7 +11,7 @@ const PostSchema = mongoose.Schema({
   voters: [
     {
       _id: String,
-      voteType: Boolean
+      voteType: String
     }
   ],
   comments: [

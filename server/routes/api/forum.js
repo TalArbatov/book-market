@@ -104,30 +104,94 @@ router.get("/getHeaders", (req, res, next) => {
 router.post("/fetchPostsByTopic/:topic", (req, res, next) => {
   Post.find({ topic: req.params.topic }, (err, posts) => {
     if (posts) {
-      console.log('inside fetchPosts')
+      console.log("inside fetchPosts");
       //handle posta data
       //return if user voted the post
       //do not send voters array to client - sensitive data
 
-      // const userID = require("jsonwebtoken").decode(req.body.token)._id;
-
+      const userID = require("jsonwebtoken").decode(req.body.token)._id;
 
       const newPosts = posts.map(post => {
-        const newPost = {...post._doc}
-        console.log(newPost)
+        const newPost = { ...post._doc };
         const voter = newPost.voters.find(voter => {
           return voter._id == userID;
         });
-        newPost.voter = null;
-        if (voter != null) post.voter = voter.voteType;
+        console.log("voter: " + voter);
+        newPost.currentUserVote = null;
+        if (voter != undefined) newPost.currentUserVote = voter.voteType;
 
         delete newPost.voters;
         return newPost;
       });
-      
-     
+
       res.status(200).send(newPosts);
     } else res.status(500).send(err);
+  });
+});
+
+router.use("/votePost", jwtAuth);
+router.post("/votePost", (req, res, next) => {
+  const { token, postID, voteType } = req.body;
+  const userID = require("jsonwebtoken").decode(token)._id;
+  // console.log('userID: ' + require('jsonwebtoken').decode(token)._id);
+  // console.log('postID:' + postID);
+  // console.log('voteType: ' + voteType);
+
+  const newVoter = {
+    _id: userID,
+    voteType: voteType
+  };
+  let voteInt = 0;
+  if (voteType == "up") voteInt = 1;
+  else voteInt = -1;
+
+  Post.findOne({ _id: postID }, (err, post) => {
+    if (post) {
+      const existingVote = post.voters.find(voter => {
+        return voter._id == userID;
+      });
+      //if user already voted
+      if (existingVote) {
+        console.log("EXISTING VOTE");
+        //if old_user_vote == new_user_vote
+        //then user un-votes, remove user voter instance and undo his effect on post.vote integer
+        if(existingVote.voteType == voteType) {
+          Post.findOneAndUpdate(
+            { _id: postID },
+            { $pull: { voters: {_id: userID} }, $inc: { votes: -1 * voteInt } },
+            (err, doc) => {
+              if (!err) res.send({ success: true });
+              else res.status(500).send('err1')
+            }
+          );
+        }
+        //else, user votes a different vote,
+        //cancel his old vote and change his voter to current voteType
+        else {
+          console.log('DIFFERET VOTE')
+          Post.findOneAndUpdate(
+            { _id: postID, "voters._id": userID },
+            { $set: { "voters.$.voteType": voteType }, $inc: { votes: 2 * voteInt } },
+            (err, doc) => {
+              if (!err) res.send({ success: true });
+              else res.status(500).send('err2')
+            }
+          );
+        }
+      }
+      //else, a new vote
+      else {
+        Post.findOneAndUpdate(
+          { _id: postID },
+          { $push: { voters: newVoter }, $inc: { votes: voteInt } },
+          (err, doc) => {
+            if (!err) res.send({ success: true });
+            else res.status(500).send('err3')
+
+          }
+        );
+      }
+    } else res.status(500).send("err4");
   });
 });
 

@@ -14,15 +14,15 @@ passport.use(
       secretOrKey: process.env.JWT_SECRET
     },
     (payload, done) => {
-      console.log('inside paassport jwt');
+      //console.log('inside paassport jwt');
       try {
         //find the user specified in token
         User.findOne({ _id: payload._id }, (err, user) => {
           //if user doesn't exist, handle it
-          console.log('payload')
-          console.log(payload)
+          //console.log('payload')
+          //console.log(payload)
           if (!user) {
-            console.log('inside passport.js jwt-strategy: user does not exist')
+            //console.log('inside passport.js jwt-strategy: user does not exist')
             return done(null, false);
           }
           //otherwise, return the user
@@ -31,7 +31,7 @@ passport.use(
           }
         });
       } catch (e) {
-        console.log('inside passport.js jwt-strategy:' + e);
+        //console.log('inside passport.js jwt-strategy:' + e);
         done(e, false);
       }
     }

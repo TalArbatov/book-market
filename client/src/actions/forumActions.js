@@ -75,7 +75,7 @@ export const fetchPostsByTopic = (topic) => {
     const token = localStorage.token;
     return axios.post('/api/forum/fetchPostsByTopic/' + topic, {token}).then(res => {
       console.log(res);
-      dispatch(fetchPostsByTopicSuccess(res))
+      dispatch(fetchPostsByTopicSuccess(res.data))
       return {success: true, payload: res.data}
     }).catch(e => {
       dispatch(fetchPostsByTopicError())
@@ -129,6 +129,27 @@ export const fetchPostSuccess = (post) => {
   return {
     type:TYPES.FETCH_POST_SUCCESS,
     payload:post
+  }
+}
+
+export const votePost = (postID, voteType) => {
+  return dispatch => {
+    dispatch(votePostRequest());
+    const data = {
+      token: localStorage.token,
+      postID: postID,
+      voteType: voteType
+    }
+    console.log(data)
+    return axios.post('/api/forum/votePost', data).then(res => {
+      console.log(res.data);
+      dispatch(votePostSuccess(postID, voteType));
+      return ({success: true})
+    }).catch(err => {
+      console.warn(err);
+      dispatch(votePostError());
+      return ({success: false, error: err})
+    })
   }
 }
 
