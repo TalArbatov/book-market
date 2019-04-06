@@ -27,7 +27,7 @@ const StyledTr = styled.tr`
 const Topic = props => {
   const { title, subtitle, address } = props.topic;
   console.log(address)
-  console.log('on topic: ' + props.forumReducer.headers[address].posts)
+  //console.log('on topic: ' + props.forumReducer.headers[address].posts)
   //type = "posts" || "comments"
   const getNum = type => {
     try {

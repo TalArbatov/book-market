@@ -27,8 +27,9 @@ class Forum extends React.PureComponent {
       <div>
         <MainWindow>
           <Switch>
-            <Route exact path="/" component={() => <div>KLAKi</div>} />
-            <Route exact path="/forum/view" component={ViewPosts} />
+          <Route exact path="/forum/view" component={ViewPosts} />
+
+            <Route exact path="/" component={ViewPosts} />
             <Route path="/forum/new" component={CreatePost} />
             <Route path="/forum/view/topic/:topic" component={ViewTopic} />
           </Switch>
