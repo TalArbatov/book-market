@@ -5,7 +5,7 @@ const PostPreviewList = ({posts}) => {
   return(
     <>
     {posts.map((post, index) => {
-      return <Link key={index} to="/fuck"><PostPreview post={post}/></Link>
+      return <PostPreview key={index}post={post}/>
     })}
     </>
   )

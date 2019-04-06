@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Post = require("mongoose").model("Post");
 const passport = require("passport");
 
-router.get("posts/", (req, res, next) => {
+router.get("/view/post/", (req, res, next) => {
   Post.find({}, (err, posts) => {
     if (posts) res.status(200).send({ success: true, payload: posts });
     else {
@@ -11,7 +11,7 @@ router.get("posts/", (req, res, next) => {
     }
   });
 });
-router.get("posts/:id", (req, res, next) => {
+router.get("/view/post/:id", (req, res, next) => {
   Post.findOne({ _id: req.params.id }, (err, post) => {
     if (post) res.status(200).send({ success: true, payload: post });
     else res.status(500).send({ success: false, payload: error });

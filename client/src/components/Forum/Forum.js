@@ -6,7 +6,8 @@ import CreatePost from "./CreatePost";
 import {connect} from 'react-redux';
 import * as ACTIONS from '../../actions/forumActions';
 import ViewTopic from './ViewTopic/ViewTopic';
-
+import ViewPost from './/ViewPost/ViewPost'
+import {withRouter} from 'react-router-dom'
 const MainWindow = styled.div`
   border-left: 5px solid #4c394e;
   background: #fff;
@@ -32,6 +33,7 @@ class Forum extends React.PureComponent {
             <Route exact path="/" component={ViewPosts} />
             <Route path="/forum/new" component={CreatePost} />
             <Route path="/forum/view/topic/:topic" component={ViewTopic} />
+            <Route path="/forum/view/post/:_id" component={ViewPost} />
           </Switch>
           <br />
           <br />
@@ -39,6 +41,7 @@ class Forum extends React.PureComponent {
           <div style={{ width: "100%" }}>
             <Link to="/forum/view">View Posts</Link>
             <Link to="/forum/new">New Post</Link>
+            <p onClick={() => {this.props.history.goBack()}}>Back</p>
           </div>
         </MainWindow>
       </div>
@@ -58,4 +61,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Forum);
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Forum));

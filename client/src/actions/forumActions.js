@@ -99,3 +99,34 @@ export const fetchPostsByTopicSuccess = (posts) => {
     payload: posts
   }
 }
+
+export const fetchPost = _id => {
+  return dispatch => {
+    dispatch(fetchPostRequest());
+    return axios.get('/api/forum/view/post/' + _id).then(res => {
+      console.log(res.data);
+      dispatch(fetchPostSuccess(res.data.payload));
+      return {success: true}
+    }).catch(err => {
+      dispatch(fetchPostError());
+      return {success: false, error: err}
+    })
+  }
+}
+
+export const fetchPostRequest = () => {
+  return {
+    type:TYPES.FETCH_POST_REQUEST
+  }
+}
+export const fetchPostError = () => {
+  return {
+    type:TYPES.FETCH_POST_ERROR
+  }
+}
+export const fetchPostSuccess = (post) => {
+  return {
+    type:TYPES.FETCH_POST_SUCCESS,
+    payload:post
+  }
+}

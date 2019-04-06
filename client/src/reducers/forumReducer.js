@@ -14,12 +14,16 @@ const forumReducer = (state = defaultState, action) => {
     case TYPES.CREATE_COMMENT_REQUEST:
     case TYPES.REMOVE_COMMENT_REQUEST:
     case TYPES.FETCH_FORUM_HEADRS_REQUEST:
+    case TYPES.FETCH_POSTS_BY_TOPIC_REQUEST:
+    case TYPES.FETCH_POST_REQUEST:
       return { ...state, isLoading: true };
     case TYPES.CREATE_COMMENT_ERROR:
     case TYPES.REMOVE_COMMENT_ERROR:
     case TYPES.CREATE_POST_ERROR:
     case TYPES.REMOVE_POST_ERROR:
     case TYPES.FETCH_FORUM_HEADRS_ERROR:
+    case TYPES.FETCH_POSTS_BY_TOPIC_ERROR:
+    case TYPES.FETCH_POST_ERROR:
       return { ...state, isLoading: false };
     case TYPES.CREATE_POST_SUCCESS:
       console.log(action.payload.topic);
@@ -35,6 +39,8 @@ const forumReducer = (state = defaultState, action) => {
         posts: [...state.posts, action.payload],
         headers: newHeaders
       };
+    case TYPES.FETCH_POST_SUCCESS:
+      return {...state, currentPost: action.payload}
     case TYPES.FETCH_FORUM_HEADRS_SUCCESS:
       return { ...state, headers: action.payload };
     default:
