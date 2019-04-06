@@ -7,6 +7,13 @@ const PostSchema = mongoose.Schema({
   authorHeader: String,
   authorEmail: String,
   date: Date,
+  votes: Number,
+  voters: [
+    {
+      _id: String,
+      voteType: Boolean
+    }
+  ],
   comments: [
     {
       date: Date,

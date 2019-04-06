@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
+import VotePost from "./VotePost";
+
 
 const StyledTr = styled.tr`
   background: #efefef;
@@ -8,31 +10,67 @@ const StyledTr = styled.tr`
   td {
     padding-left: 25px;
   }
-  p ,a{
-    color:black;
-    text-decoration:none;
-  }
-  p:first-child {
-    font-weight:600;
-    font-size:1.1em;
-    color:#0000b7;
-  }
-  p:nth-child(2) {
-    font-size:0.9em;
-    padding-left:20px;
-  }
+  
 `;
 
+const PostContents = styled.div`
+margin-left:25px;
+`
+
+const PostWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const PostHeader = styled.div`
+a {
+    color: black;
+    text-decoration: none;
+  }
+  p{
+    font-weight: 600;
+    font-size: 1.1em;
+    color: #0000b7;
+  }
+`
+
+const PostFooter = styled.div`
+p {
+  color:black;
+  font-size:0.8em;
+
+}
+`
+
+const VotePostWrapper = styled.div`
+display:flex;
+align-items:center;
+`
 const PostPreview = ({ post }) => {
+  const m = new Date(post.date);
+  var dateString = m.getFullYear() +"/"+ (m.getMonth()+1) +"/"+ m.getDate() + " " + m.getHours() + ":" + m.getMinutes() + ":" + m.getSeconds();
+
+
   return (
     <StyledTr>
       <td>
-      <Link to={'/forum/view/post/' + post._id}>
-        <p>{post.title}</p>
-        </Link>
+        <PostWrapper>
+          <VotePostWrapper>
+          <VotePost />
+          </VotePostWrapper>
+          <PostContents>
+            <PostHeader>
+            <Link to={"/forum/view/post/" + post._id}>
+              <p>{post.title}</p>
+            </Link>
+            </PostHeader>
+            <PostFooter>
+              <p>Created by <Link to='/fuck'>{post.authorHeader}</Link>, {dateString}</p>
+            </PostFooter>
+          </PostContents>
+        </PostWrapper>
       </td>
     </StyledTr>
   );
 };
 export default PostPreview;
-

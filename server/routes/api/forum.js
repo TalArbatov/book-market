@@ -4,8 +4,9 @@ const passport = require("passport");
 
 router.get("/view/post/", (req, res, next) => {
   Post.find({}, (err, posts) => {
-    if (posts) res.status(200).send({ success: true, payload: posts });
-    else {
+    if (posts) {
+      res.status(200).send({ success: true, payload: posts });
+    } else {
       console.log("Error in get.(/)");
       res.status(500).send({ success: false, payload: "Error in get.(/)" });
     }
@@ -37,6 +38,7 @@ router.route("/").post(jwtAuth, (req, res, next) => {
     title,
     content,
     topic: topic,
+    votes: 0,
     authorHeader: author,
     authorEmail: authorEmail,
     date,
@@ -99,10 +101,33 @@ router.get("/getHeaders", (req, res, next) => {
   });
 });
 
-router.get("/fetchPostsByTopic/:topic", (req, res, next) => {
+router.post("/fetchPostsByTopic/:topic", (req, res, next) => {
   Post.find({ topic: req.params.topic }, (err, posts) => {
-    if (posts) res.status(200).send(posts);
-    else res.status(500).send(err);
+    if (posts) {
+      console.log('inside fetchPosts')
+      //handle posta data
+      //return if user voted the post
+      //do not send voters array to client - sensitive data
+
+      // const userID = require("jsonwebtoken").decode(req.body.token)._id;
+
+
+      const newPosts = posts.map(post => {
+        const newPost = {...post._doc}
+        console.log(newPost)
+        const voter = newPost.voters.find(voter => {
+          return voter._id == userID;
+        });
+        newPost.voter = null;
+        if (voter != null) post.voter = voter.voteType;
+
+        delete newPost.voters;
+        return newPost;
+      });
+      
+     
+      res.status(200).send(newPosts);
+    } else res.status(500).send(err);
   });
 });
 

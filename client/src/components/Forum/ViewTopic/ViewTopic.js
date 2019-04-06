@@ -46,6 +46,7 @@ class ViewTopic extends React.PureComponent {
   componentDidMount() {
     this.props.fetchPostsByTopic(this.props.match.params.topic).then(res => {
       if (res.success) {
+        console.log(res.payload)
         this.setState({ posts: res.payload });
       }
     });
@@ -54,14 +55,23 @@ class ViewTopic extends React.PureComponent {
   state = {
     posts: [],
     currentPage: 1,
-    postsPerPage: 10
+    postsPerPage: 5,
+    pageViewScope: 3
+  };
+  //this equals to pageNumbersInt
+
+  changePage = num => {
+    const lastPage = Math.ceil(this.state.posts.length / this.state.postsPerPage);
+    console.log("num: " + num);
+    console.log("this.lastPage: " + lastPage);
+    if (num < 1) num = 1;
+    if (num > lastPage) num = lastPage;
+    this.setState({ currentPage: Number(num) });
   };
 
-  changePage = e => {
-    this.setState({ currentPage: e.target.id });
-  };
   render() {
-    const { currentPage, postsPerPage, posts } = this.state;
+    console.log(this.state);
+    const { currentPage, postsPerPage, posts, pageViewScope } = this.state;
     const lastPostIndex = currentPage * postsPerPage;
     const firstPostIndex = lastPostIndex - postsPerPage;
     const displayedPosts = posts.slice(firstPostIndex, lastPostIndex);
@@ -71,16 +81,65 @@ class ViewTopic extends React.PureComponent {
     });
 
     // Logic for displaying page numbers
+
+    //pageNumbers should be pageViewScope * 2 + 1
     const pageNumbers = [];
     for (let i = 1; i <= Math.ceil(posts.length / postsPerPage); i++) {
-      if (i >= currentPage - 3 && i <= currentPage + 3) pageNumbers.push(i);
+      if (
+        i >= currentPage - pageViewScope &&
+        i <= currentPage + pageViewScope
+      ) {
+        pageNumbers.push(i);
+      }
+      // if(i >= currentPage - pageViewScope)
+      //   pageNumbers.push(i);
     }
+    const pageNumbersInt = Math.ceil(posts.length / postsPerPage);
+    //check if page is one of the first pages
+    if (currentPage - pageViewScope < 1) {
+      console.log("scope boundery: first pages");
+      console.log("te");
+      const lastViewablePage = Number(currentPage + pageViewScope);
+      const startFor = lastViewablePage + 1;
+      console.log("start for: " + startFor);
+      //const endFor = lastViewablePage + currentPage - pageViewScope + 1
+      const endFor = startFor - currentPage + pageViewScope + 1;
+      console.log("end for: " + endFor);
+      for (let i = startFor; i < endFor; i++) {
+        console.log("i: " + i);
+        console.log("pageNumers: " + pageNumbersInt);
+        if (i < pageNumbersInt) pageNumbers.push(i);
+      }
+    }
+    //check if page is one of the last pages
+    if (currentPage + pageViewScope > pageNumbersInt) {
+      console.log("scope boundery: last pages");
+      const firstViewablePage = Number(currentPage - pageViewScope);
+      console.log("firstViewablePage: " + firstViewablePage);
+      const boundary = currentPage + pageViewScope - pageNumbersInt;
+
+      const startFor = firstViewablePage - 1;
+      const endFor = startFor - boundary + 1;
+      console.log(boundary);
+      console.log("startFor" + startFor);
+      console.log("endFor: " + endFor);
+      for (let i = endFor; i <= startFor; i++) {
+        if (i > 0) pageNumbers.push(i);
+      }
+    }
+
+    pageNumbers.sort((a, b) => a - b);
 
     return (
       <Wrapper>
         <h2>{topic.title}</h2>
         <Header />
-        <Filter pageNumbers={pageNumbers} changePage={this.changePage} />
+        <Filter
+          currentPage={currentPage}
+          pageNumbers={pageNumbers}
+          changePage={this.changePage}
+          lastPage={pageNumbersInt}
+        />
 
         <Table>
           <tbody>

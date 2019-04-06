@@ -11,27 +11,51 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 const SubWrapper = styled.div`
-  display: inline-block;
+  display: flex;
+  align-items:center;
   width: 100%;
   p {
     display: inline-block;
+    padding:10px 15px;
   }
+
 `;
 
 const StyledUl = styled.ul`
+margin:0;
   list-style-type: none;
-  display: inline-block;
+  padding: 0;
+  display: inline-flex;
+  width: 100%;
+  justify-content: center;
   li {
     display: inline-block;
-    margin: 0 10px;
   }
 `;
 
-const Filter = ({ pageNumbers, changePage }) => {
+const PageButton = styled.div`
+  padding: 0 0;
+  cursor: pointer;
+  p {
+    margin: 0;
+    color: black;
+  }
+`;
+
+const Filter = ({ pageNumbers, changePage, currentPage, lastPage }) => {
   const renderPageNumbers = pageNumbers.map(number => {
     return (
-      <li key={number} id={number} onClick={changePage}>
-        {number}
+      <li key={number}>
+        {/* <p style={currentPage == number ? {fontWeight:'800'} : {}}>{number}</p> */}
+        <PageButton>
+          <p
+            style={currentPage == number ? { fontWeight: "800" } : {}}
+            id={number}
+            onClick={e => changePage(number)}
+          >
+            {number}
+          </p>
+        </PageButton>
       </li>
     );
   });
@@ -39,16 +63,32 @@ const Filter = ({ pageNumbers, changePage }) => {
   return (
     <Wrapper>
       <SubWrapper>
-        <p>Paging:</p>
+        {/* <p>Paging:</p> */}
         <StyledUl>
-          <li><p>&lt;</p></li>
-        {renderPageNumbers}
-        <li><p>&gt;</p></li>
+          <li>
+            <PageButton onClick={e => changePage(1)}>
+              <p>&lt; &lt;</p>
+            </PageButton>
+          </li>
+          <li>
+            <PageButton onClick={e => changePage(currentPage - 1)}>
+              <p>&lt;</p>
+            </PageButton>
+          </li>
+          {renderPageNumbers}
+          <li>
+            <PageButton onClick={e => changePage(currentPage + 1)}>
+              <p>&gt;</p>
+            </PageButton>
+          </li>
+          <li>
+            <PageButton onClick={e => changePage(lastPage)}>
+              <p>&gt; &gt;</p>
+            </PageButton>
+          </li>
         </StyledUl>
       </SubWrapper>
-      <div>
-        <p>Filter</p>
-      </div>
+      <div>{/* <p>Filter</p> */}</div>
     </Wrapper>
   );
 };

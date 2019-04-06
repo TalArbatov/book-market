@@ -17,7 +17,7 @@ module.exports = {
       },
       JWT_SECRET, 
       //{expiresIn: '10h'}
-      {expiresIn: 50}
+      {expiresIn: 5000}
     );
     console.log('JWT_TOKEN: ' + token)
     return token;
