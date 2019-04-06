@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
 const PostSchema = mongoose.Schema({
+  topic: String,
   title: String,
   content: String,
-  author: String,
+  authorHeader: String,
+  authorEmail: String,
   date: Date,
   comments: [
     {

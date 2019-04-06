@@ -44,10 +44,12 @@ module.exports = {
             email,
             password
           });
-          newUser.save();
+          newUser.save((err, resUser) => {
           //sign JWT token
-          const token = authHelper.signJWT(user);
-          res.send({ success: true, token });
+          const token = authHelper.signJWT(resUser);
+          res.send({ success: true, token });  
+          });
+          
         }
       });
     }

@@ -42,11 +42,12 @@ const Login = props => {
     //setForm({ ...getForm, [type]: input });
     setState({ ...getState, form: { ...getState.form, [type]: input } });
   };
-  const submitForm = () => {
+  const submitForm = (e) => {
+    e.preventDefault();
     console.log(getState.form);
     props.submit(getState.form).then(res => {
       if (res.success) {
-        props.history.push("/");
+        props.history.push("/forum/view");
         //setState(defaultState);
       } else setState({ ...getState, error: "Invalid Credentials." });
     });
@@ -55,6 +56,7 @@ const Login = props => {
   return (
     <div>
       <h3>Login</h3>
+      <form onSubmit={submitForm}>
       <table>
         <tbody>
           <tr>
@@ -98,9 +100,11 @@ const Login = props => {
         <label>show password</label>
       </div>
       <ButtonWrapper>
-        <button onClick={submitForm}>Login</button>
+        {/* <button onClick={submitForm}>Login</button> */}
+        <button type='submit'>Login</button>
         <button onClick={props.secret}>Secret</button>
       </ButtonWrapper>
+      </form>
       <p style={{ color: "red" }}>{getState.error}</p>
     </div>
   );

@@ -9,11 +9,13 @@ const MainWindow = styled.div`
 padding:60px 15px;
 border-left: 5px solid #4c394e;
 background:#fff;
-min-width:80%;
+width:75%;
+min-width:400px;
 height:50%;
 display: flex;
 flex-direction:row;
 justify-content: space-evenly;
+flex-wrap:wrap;
 `
 
 const submitSignup = (form) => {

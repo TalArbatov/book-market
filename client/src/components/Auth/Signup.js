@@ -5,7 +5,7 @@ import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
 import { Link } from "react-router-dom";
-
+import { withRouter } from "react-router-dom";
 const defaultState = {
   form: {
     firstName: "",
@@ -67,103 +67,112 @@ const Signup = props => {
       submitForm();
     }
   };
-  const submitForm = () => {
+  const submitForm = e => {
+    e.preventDefault();
     console.log("submiting form");
     props.submit(getState.form).then(res => {
       console.log(res);
       if (!res.success) {
         console.log("FAILURE");
         setState({ ...getState, error: res.error });
-      } else console.log("success!!!");
+      } else {
+        console.log("success!!!");
+        props.history.push("/forum");
+      }
     });
   };
   return (
     <div>
       <h3>Sign Up</h3>
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <TextField
-                required
-                label="First Name"
-                margin="normal"
-                variant="outlined"
-                classes={{ root: classes.root }}
-                onChange={e => updateForm(e.target.value, "firstName")}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <TextField
-                required
-                label="Last Name"
-                margin="normal"
-                variant="outlined"
-                classes={{ root: classes.root }}
-                onChange={e => updateForm(e.target.value, "lastName")}
-              />{" "}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <TextField
-                required
-                label="Email"
-                margin="normal"
-                variant="outlined"
-                classes={{ root: classes.root }}
-                onChange={e => updateForm(e.target.value, "email")}
-              />{" "}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <TextField
-                required
-                label="Password"
-                type="password"
-                margin="normal"
-                classes={{ root: classes.root }}
-                variant="outlined"
-                onChange={e => updateForm(e.target.value, "password")}
-              />{" "}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <TextField
-                required
-                label="Confirm Password"
-                margin="normal"
-                variant="outlined"
-                type="password"
-                classes={{ root: classes.root }}
-                onChange={e => updateForm(e.target.value, "confirmPassword")}
-              />{" "}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
-        <Checkbox
-          checked={getState.termsAgreed}
-          onChange={() => {
-            getState.termsAgreed
-              ? setState({ ...getState, termsAgreed: false })
-              : setState({ ...getState, termsAgreed: true });
-          }}
-          value="checkedA"
-        />
-        <label>i agree to the <Link to='/terms'>terms and conditions</Link></label>
-      </div>
-      <ButtonWrapper>
-        <button onClick={validateForm}>Sign up</button>
-      </ButtonWrapper>
+      <form onSubmit={submitForm}>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <TextField
+                  required
+                  label="First Name"
+                  margin="normal"
+                  variant="outlined"
+                  classes={{ root: classes.root }}
+                  onChange={e => updateForm(e.target.value, "firstName")}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <TextField
+                  required
+                  label="Last Name"
+                  margin="normal"
+                  variant="outlined"
+                  classes={{ root: classes.root }}
+                  onChange={e => updateForm(e.target.value, "lastName")}
+                />{" "}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <TextField
+                  required
+                  label="Email"
+                  margin="normal"
+                  variant="outlined"
+                  classes={{ root: classes.root }}
+                  onChange={e => updateForm(e.target.value, "email")}
+                />{" "}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <TextField
+                  required
+                  label="Password"
+                  type="password"
+                  margin="normal"
+                  classes={{ root: classes.root }}
+                  variant="outlined"
+                  onChange={e => updateForm(e.target.value, "password")}
+                />{" "}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <TextField
+                  required
+                  label="Confirm Password"
+                  margin="normal"
+                  variant="outlined"
+                  type="password"
+                  classes={{ root: classes.root }}
+                  onChange={e => updateForm(e.target.value, "confirmPassword")}
+                />{" "}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          <Checkbox
+            checked={getState.termsAgreed}
+            onChange={() => {
+              getState.termsAgreed
+                ? setState({ ...getState, termsAgreed: false })
+                : setState({ ...getState, termsAgreed: true });
+            }}
+            value="checkedA"
+          />
+          <label>
+            i agree to the <Link to="/terms">terms and conditions</Link>
+          </label>
+        </div>
+        <ButtonWrapper>
+          {/* <button onClick={validateForm}>Sign up</button> */}
+          <button type="submit">Sign up</button>
+        </ButtonWrapper>
+      </form>
       <p style={{ color: "red" }}>{getState.error}</p>
     </div>
   );
 };
 
-export default withStyles(styles)(Signup);
+export default withRouter(withStyles(styles)(Signup));

@@ -30,6 +30,10 @@ const leftButtons = [
   {
     title: "Login",
     path: "/login"
+  },
+  {
+    title:'Forum',
+    path: '/forum'
   }
 ];
 
