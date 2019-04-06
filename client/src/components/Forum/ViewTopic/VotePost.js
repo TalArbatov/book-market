@@ -10,7 +10,8 @@ const Wrapper = styled.div`
   align-items: center;
   p {
     margin: 0;
-    margin-right: 7px;
+    text-align:center;
+    width:25px;
     display: inline-block;
   }
 `;
