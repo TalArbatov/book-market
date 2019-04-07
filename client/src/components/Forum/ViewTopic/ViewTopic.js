@@ -41,8 +41,10 @@ const Wrapper = styled.div`
   width: 80%;
 `;
 
+
+
 class ViewTopic extends React.PureComponent {
-  //  topic = this.props.match.params.topic;
+   // topic = this.props.match.params.topic;
   componentDidMount() {
     this.props.fetchPostsByTopic(this.props.match.params.topic).then(res => {
       if (res.success) {
@@ -62,15 +64,15 @@ class ViewTopic extends React.PureComponent {
 
   changePage = num => {
     const lastPage = Math.ceil(this.state.posts.length / this.state.postsPerPage);
-    console.log("num: " + num);
-    console.log("this.lastPage: " + lastPage);
+    //console.log("num: " + num);
+    //console.log("this.lastPage: " + lastPage);
     if (num < 1) num = 1;
     if (num > lastPage) num = lastPage;
     this.setState({ currentPage: Number(num) });
   };
 
   render() {
-    console.log(this.state);
+    //console.log(this.state);
     const { currentPage, postsPerPage, posts, pageViewScope } = this.state;
     const lastPostIndex = currentPage * postsPerPage;
     const firstPostIndex = lastPostIndex - postsPerPage;
@@ -97,32 +99,32 @@ class ViewTopic extends React.PureComponent {
     const pageNumbersInt = Math.ceil(posts.length / postsPerPage);
     //check if page is one of the first pages
     if (currentPage - pageViewScope < 1) {
-      console.log("scope boundery: first pages");
-      console.log("te");
+      //console.log("scope boundery: first pages");
+      //console.log("te");
       const lastViewablePage = Number(currentPage + pageViewScope);
       const startFor = lastViewablePage + 1;
-      console.log("start for: " + startFor);
+      //console.log("start for: " + startFor);
       //const endFor = lastViewablePage + currentPage - pageViewScope + 1
       const endFor = startFor - currentPage + pageViewScope + 1;
-      console.log("end for: " + endFor);
+      //console.log("end for: " + endFor);
       for (let i = startFor; i < endFor; i++) {
-        console.log("i: " + i);
-        console.log("pageNumers: " + pageNumbersInt);
+        //console.log("i: " + i);
+        //console.log("pageNumers: " + pageNumbersInt);
         if (i < pageNumbersInt) pageNumbers.push(i);
       }
     }
     //check if page is one of the last pages
     if (currentPage + pageViewScope > pageNumbersInt) {
-      console.log("scope boundery: last pages");
+      //console.log("scope boundery: last pages");
       const firstViewablePage = Number(currentPage - pageViewScope);
-      console.log("firstViewablePage: " + firstViewablePage);
+      //console.log("firstViewablePage: " + firstViewablePage);
       const boundary = currentPage + pageViewScope - pageNumbersInt;
 
       const startFor = firstViewablePage - 1;
       const endFor = startFor - boundary + 1;
-      console.log(boundary);
-      console.log("startFor" + startFor);
-      console.log("endFor: " + endFor);
+      //console.log(boundary);
+      //console.log("startFor" + startFor);
+      //console.log("endFor: " + endFor);
       for (let i = endFor; i <= startFor; i++) {
         if (i > 0) pageNumbers.push(i);
       }
@@ -147,7 +149,7 @@ class ViewTopic extends React.PureComponent {
               <td />
             </StyledTr>
             {/* <h1>View Topic {this.props.match.params.topic}</h1> */}
-            <PostPreviewList posts={displayedPosts} />
+            <PostPreviewList posts={displayedPosts} topic={this.props.match.params.topic}/>
           </tbody>
         </Table>
       </Wrapper>

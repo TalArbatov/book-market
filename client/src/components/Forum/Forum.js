@@ -32,8 +32,8 @@ class Forum extends React.PureComponent {
 
             <Route exact path="/" component={ViewPosts} />
             <Route path="/forum/new" component={CreatePost} />
-            <Route path="/forum/view/topic/:topic" component={ViewTopic} />
-            <Route path="/forum/view/post/:_id" component={ViewPost} />
+            <Route exact path="/forum/view/:topic" component={ViewTopic} />
+            <Route path="/forum/view/:topic/:_id" component={ViewPost} />
           </Switch>
           <br />
           <br />

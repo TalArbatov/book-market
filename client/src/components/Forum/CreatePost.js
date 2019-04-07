@@ -84,7 +84,7 @@ const CreatePost = props => {
         console.log('unauthorized2')
         setState({...getState, error: res.error})      
       }
-      //else props.history.push('/forum/view')
+      else props.history.push('/forum/view')
     });
   };
 

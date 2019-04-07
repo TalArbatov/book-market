@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import VotePost from "./VotePost";
-
+import formatDate from '../../../utils/formatDate'
 
 const StyledTr = styled.tr`
   background: #efefef;
@@ -46,10 +46,11 @@ const VotePostWrapper = styled.div`
 display:flex;
 align-items:center;
 `
-const PostPreview = ({ post }) => {
+const PostPreview = ({ post, topic }) => {
+  console.log('test:::' + topic)
   const m = new Date(post.date);
-  var dateString = m.getFullYear() +"/"+ (m.getMonth()+1) +"/"+ m.getDate() + " " + m.getHours() + ":" + m.getMinutes() + ":" + m.getSeconds();
-
+  //var dateString = m.getFullYear() +"/"+ (m.getMonth()+1) +"/"+ m.getDate() + " " + m.getHours() + ":" + m.getMinutes() + ":" + m.getSeconds();
+  const dateString = formatDate(m)
 
   return (
     <StyledTr>
@@ -60,7 +61,7 @@ const PostPreview = ({ post }) => {
           </VotePostWrapper>
           <PostContents>
             <PostHeader>
-            <Link to={"/forum/view/post/" + post._id}>
+            <Link to={`/forum/view/${topic}/${post._id}`}>
               <p>{post.title}</p>
             </Link>
             </PostHeader>

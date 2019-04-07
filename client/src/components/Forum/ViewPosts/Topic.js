@@ -40,7 +40,7 @@ const Topic = props => {
   return (
     <StyledTr>
       <td>
-        <Link to={`/forum/view/topic/${address}`}>
+        <Link to={`/forum/view/${address}`}>
           <p>{title}</p>
         </Link>
         <p>{subtitle}</p>

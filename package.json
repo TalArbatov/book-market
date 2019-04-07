@@ -4,7 +4,7 @@
   "description": "A simple application using React/Redux/Express/MongoDB",
   "main": "index.js",
   "scripts": {
-    "start:db": "mongod --dbpath=\"C:/Users/Tal/mongo-data\"",
+    "start:db": "mongod --dbpath=\"C:/Users/Tal Arbatov/mongo-data\"",
     "start:server": "nodemon server/app",
     "start:client": "webpack --watch",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\" "
@@ -44,6 +44,7 @@
     "passport-local": "^1.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-modal": "^3.8.1",
     "react-redux": "^6.0.1",
     "react-router-dom": "^5.0.0",
     "redux": "^4.0.1",

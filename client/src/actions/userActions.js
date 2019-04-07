@@ -85,6 +85,8 @@ export const logout = () => {
     return axios.get("/api/auth/logout").then(res => {
       if (res.data.success) {
         localStorage.token = undefined;
+        //setAuthorizationToken(null);
+
         dispatch(logoutSuccess());
         return { success: true };
       } else {

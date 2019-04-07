@@ -1,5 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import SkipPrevious from "@material-ui/icons/SkipPrevious";
+import SkipNext from "@material-ui/icons/SkipNext";
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,17 +16,16 @@ const Wrapper = styled.div`
 `;
 const SubWrapper = styled.div`
   display: flex;
-  align-items:center;
+  align-items: center;
   width: 100%;
   p {
     display: inline-block;
-    padding:10px 15px;
+    padding: 10px 10px;
   }
-
 `;
 
 const StyledUl = styled.ul`
-margin:0;
+  margin: 0;
   list-style-type: none;
   padding: 0;
   display: inline-flex;
@@ -67,23 +70,31 @@ const Filter = ({ pageNumbers, changePage, currentPage, lastPage }) => {
         <StyledUl>
           <li>
             <PageButton onClick={e => changePage(1)}>
-              <p>&lt; &lt;</p>
+              <p>
+                <SkipPrevious />
+              </p>
             </PageButton>
           </li>
           <li>
             <PageButton onClick={e => changePage(currentPage - 1)}>
-              <p>&lt;</p>
+              <p>
+                <KeyboardArrowLeft />
+              </p>
             </PageButton>
           </li>
           {renderPageNumbers}
           <li>
             <PageButton onClick={e => changePage(currentPage + 1)}>
-              <p>&gt;</p>
+              <p>
+                <KeyboardArrowRight />
+              </p>
             </PageButton>
           </li>
           <li>
             <PageButton onClick={e => changePage(lastPage)}>
-              <p>&gt; &gt;</p>
+              <p>
+                <SkipNext />
+              </p>
             </PageButton>
           </li>
         </StyledUl>

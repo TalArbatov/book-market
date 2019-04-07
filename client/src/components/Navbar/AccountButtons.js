@@ -15,7 +15,6 @@ ul {
   height:100%;
 display:flex;
 align-items:center;
-
 }
 li {
   display:inline-block;
@@ -43,7 +42,6 @@ a {
   height:100%;
   display:flex;
   align-items:center;
-
 }
 p {
   font-weight:bold;  

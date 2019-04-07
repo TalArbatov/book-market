@@ -38,4 +38,6 @@ UserSchema.methods = {
   }
 };
 
+//user.comparePassword(password, (err, isMatch) => {})
+
 mongoose.model("User", UserSchema);
