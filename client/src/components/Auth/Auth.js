@@ -38,8 +38,9 @@ const Auth = props => {
   return(
     <MainWindow>
       <Signup submit={(form) => {return props.signup(form)}}/>
-      <Login submit={(form) =>{return props.login(form)}} secret={createSecret}/>
+      {/* <Login submit={(form) =>{return props.login(form)}} secret={createSecret}/> */}
       {/* <button onClick={createSecret}>Secret</button> */}
+      <Login />
     </MainWindow>
   )
 }

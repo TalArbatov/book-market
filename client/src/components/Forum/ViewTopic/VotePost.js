@@ -6,6 +6,8 @@ import { connect } from "react-redux";
 import * as ACTIONS from "../../../actions/forumActions";
 import authenticated from "../../../utils/authenticated";
 import Modal from "react-modal";
+import Login from '../../Auth/Login';
+
 Modal.setAppElement("#root");
 
 const Wrapper = styled.div`
@@ -79,14 +81,15 @@ const VotePost = props => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <h1>Test</h1>
-        <button
+        <p>Please log-in to vote on posts.</p>
+        <Login />
+        {/* <button
           onClick={() => {
             setState({ ...getState, isOpen: false });
           }}
         >
           Close
-        </button>
+        </button> */}
       </Modal>
     </>
   );

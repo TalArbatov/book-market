@@ -4,6 +4,8 @@ import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import {connect} from 'react-redux';
+import * as ACTIONS from '../../actions/userActions';
 
 const defaultState = {
   form: {
@@ -45,7 +47,7 @@ const Login = props => {
   const submitForm = (e) => {
     e.preventDefault();
     console.log(getState.form);
-    props.submit(getState.form).then(res => {
+    props.login(getState.form).then(res => {
       if (res.success) {
         props.history.push("/forum");
         //setState(defaultState);
@@ -110,4 +112,17 @@ const Login = props => {
   );
 };
 
-export default withRouter(withStyles(styles)(Login));
+const mapStateToProps = state => {
+  return {
+    userReducer: state.userReducer
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    signup : (form) => dispatch(ACTIONS.signup(form)),
+    login : (form) => dispatch(ACTIONS.login(form))
+
+  }
+}
+
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)((withStyles(styles)(Login))));

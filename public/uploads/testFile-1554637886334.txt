@@ -1,0 +1,86 @@
+//
+//LAZY LOADING
+//
+
+
+//1. npm i --save @babel/plugin-syntax-dynamic-import
+//2. include in .babelrc
+
+const LazyRegister = React.lazy(() => import('./Register'));
+return(
+  <Suspense fallback={<div>Loading...</div>}>
+    <LazyRegister />
+  </Suspense>
+)
+
+
+//
+//CONTEXT
+//
+
+
+// 1.create ./context/AppContext.js
+
+	import React from 'react';
+
+	const user = {
+    	username: ''
+	}
+        const AppContext = React.createContext();
+        export default AppContext; 
+
+// 2. inside index.js
+
+	return(
+  	  <AppContext.Provider value={value}>
+    	    <App />
+       	  </AppContext.Provider>
+
+// 3. inside any component (import Context)
+
+            <AppContext.Consumer>
+                {user => <p>username: {user.username}</p>}
+            </AppContext.Consumer/>
+
+
+//
+//REF
+//
+const submit = () => {
+  console.log(inputText.current.value);
+}
+
+const inputText = React.createRef()
+
+return(
+  <div>
+    <input type='text' ref={inputText} />
+    <button onClick={submit}>click</button>
+  </div>
+)
+
+
+
+//
+//HOC
+//
+
+
+const Example = (props) => {
+  return (
+    <>
+      <p>Example</p>
+    </> 
+  )
+}
+
+const withHeader = (WrappedComponent) => {
+  return (props) => {
+    <>
+      <h4>Powered By Tal</h4>
+      <WrappedComponent />
+    </>
+  }
+}
+
+export default withHeader(WrappedComponent);
