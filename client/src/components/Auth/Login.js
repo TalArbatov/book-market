@@ -47,7 +47,7 @@ const Login = props => {
     console.log(getState.form);
     props.submit(getState.form).then(res => {
       if (res.success) {
-        props.history.push("/forum/view");
+        props.history.push("/forum");
         //setState(defaultState);
       } else setState({ ...getState, error: "Invalid Credentials." });
     });

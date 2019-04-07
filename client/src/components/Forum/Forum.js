@@ -28,10 +28,10 @@ class Forum extends React.PureComponent {
       <div>
         <MainWindow>
           <Switch>
-          <Route exact path="/forum/view" component={ViewPosts} />
+          {/* <Route exact path="/forum/view" component={ViewPosts} /> */}
 
-            <Route exact path="/" component={ViewPosts} />
-            <Route path="/forum/new" component={CreatePost} />
+            <Route exact path="/forum" component={ViewPosts} />
+            <Route exact path="/forum/new" component={CreatePost} />
             <Route exact path="/forum/view/:topic" component={ViewTopic} />
             <Route path="/forum/view/:topic/:_id" component={ViewPost} />
           </Switch>
@@ -39,7 +39,7 @@ class Forum extends React.PureComponent {
           <br />
           <br />
           <div style={{ width: "100%" }}>
-            <Link to="/forum/view">View Posts</Link>
+            {/* <Link to="/forum/view">View Posts</Link> */}
             <Link to="/forum/new">New Post</Link>
             <p onClick={() => {this.props.history.goBack()}}>Back</p>
           </div>

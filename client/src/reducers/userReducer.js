@@ -22,6 +22,13 @@ const userReducer = (state = defaultState, action) => {
         authenticated: true,
         user: action.payload.userJWT
       };
+    case TYPES.USER_LOGOUT_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        authenticated: false,
+        user: {}
+      }
     default:
       return state;
   }

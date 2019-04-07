@@ -33,7 +33,7 @@ const leftButtons = [
   },
   {
     title:'Forum',
-    path: '/forum/view'
+    path: '/forum'
   }
 ];
 
