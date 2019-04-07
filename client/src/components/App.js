@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Auth from './Auth/Auth';
 import Terms from './Auth/Terms';
 import Forum from './Forum/Forum'
+import Account from './Account/Account';
 const ContentWrap = styled.div`
   background: #f0f0f0;
   min-height:100vh;
@@ -22,6 +23,8 @@ const App = props => {
           <Route path="/login" component={() => <Auth />} />
           <Route path="/terms" component={() => <Terms />} />
           <Route path="/forum" component={() => <Forum />} />
+          <Route path="/account" component={() => <Account />} />
+
         </Switch>
       </ContentWrap>
     </div>

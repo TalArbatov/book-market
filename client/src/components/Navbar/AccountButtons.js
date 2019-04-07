@@ -72,7 +72,7 @@ const AccountButtons = ({ user, authenticated, logout }) => {
           <Link to="/order-status">Order Status</Link>
         </li>
         <li>
-          <Link to="/wishlist">My Account</Link>
+          <Link to="/account">My Account</Link>
         </li>
         {authenticated ? (
           <li>
