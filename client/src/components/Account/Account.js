@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Dropzone from "react-dropzone";
 import axios from "axios";
+import config from "../../config";
+import {connect} from 'react-redux';
+import * as ACTIONS from '../../actions/userActions';
+
+
+
+const PROFILE_IMG_PATH = config.PROFILE_IMG_PATH;
+
+
 const MainWindow = styled.div`
   border-left: 5px solid #4c394e;
   background: #fff;
@@ -12,6 +21,20 @@ const MainWindow = styled.div`
   flex-direction: row;
   justify-content: space-evenly;
   flex-wrap: wrap;
+`;
+
+const ImgWrapper = styled.div`
+  display: inline-block;
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
+
+  img {
+    width: auto;
+    height: 100%;
+  }
 `;
 const MyAccount = props => {
   const fileRef = React.createRef();
@@ -46,28 +69,32 @@ const MyAccount = props => {
     const formData = new FormData();
     formData.append("testFile", files[0]);
     formData.append("token", localStorage.token);
-    return axios.post("/api/account/uploadPhoto", formData).then(res => {
-      console.log(res.data);
-    });
+    props.uploadUserImage(formData);
+    
   };
-  const arrayBufferToBase64 = (buffer) => {
-    var binary = '';
+  const arrayBufferToBase64 = buffer => {
+    var binary = "";
     var bytes = [].slice.call(new Uint8Array(buffer));
-    bytes.forEach((b) => binary += String.fromCharCode(b));
+    bytes.forEach(b => (binary += String.fromCharCode(b)));
     return window.btoa(binary);
-};
+  };
 
   const getImage = () => {
     const _id = require("jsonwebtoken").decode(localStorage.token)._id;
     axios.get("/api/account/getImage/" + _id).then(res => {
-      const imgBuffer = res.data.data.data;
-      console.log(imgBuffer);
+      //const imgBuffer = res.data.data.data;
+      //console.log(imgBuffer);
       // console.log(img)
-      var base64Flag = "data:image/jpeg;base64,";
-      var imageStr = arrayBufferToBase64(imgBuffer);
-      setImgState({ isLoaded: true, img: base64Flag + imageStr });
+      //var base64Flag = "data:image/jpeg;base64,";
+      //var imageStr = arrayBufferToBase64(imgBuffer);
+      setImgState({ isLoaded: true, img: PROFILE_IMG_PATH + res.data });
+      console.log(res.data);
     });
   };
+
+  const profileImage = (<ImgWrapper>
+  <img src={getImgState.img} />
+</ImgWrapper>)
 
   return (
     <MainWindow>
@@ -91,9 +118,22 @@ const MyAccount = props => {
         <button type="submit">Upload</button>
       </form>
       <button onClick={getImage}>Get Image</button>
-      {getImgState.isLoaded ? <div style={{borderRadius:'50%'}}><img style={{maxWidth:'90px', objectFit: 'contain'}} src={getImgState.img} /></div> : <div />}
+      {/* {getImgState.isLoaded ? <div style={{borderRadius:'50%'}}><img style={{maxWidth:'90px', objectFit: 'contain'}} src={getImgState.img} /></div> : <div />} */}
+      {getImgState.isLoaded ? profileImage : <p>Not loaded yet.</p>}
+      
     </MainWindow>
   );
 };
+const mapStateToProps = state => {
+  return {
+    userReducer: state.userReducer
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchUser : (_id) => dispatch(ACTIONS.fetchUser(_id)),
+    uploadUserImage : (formData) => dispatch(ACTIONS.uploadUserImage(formData))
+  }
+}
 
-export default MyAccount;
+export default connect(mapStateToProps,mapDispatchToProps)(MyAccount);

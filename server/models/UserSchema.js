@@ -1,11 +1,14 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require("bcrypt-nodejs");
 
 const UserSchema = mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true },
-  image: {data: Buffer, contentType: String},
+  //image: {data: Buffer, contentType: String},
+  profileImage: {
+    filename: {type: String, default: 'default.jpg'}
+  },
   password: { type: String, required: true }
   // orderHistory: [
   //   {

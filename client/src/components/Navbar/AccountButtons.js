@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { PromiseProvider } from "mongoose";
+import config from "../../config.js";
+
+const PROFILE_IMG_PATH = config.PROFILE_IMG_PATH;
 
 const Wrapper = styled.div`
 display:inline-block;
@@ -52,14 +55,32 @@ li > div {
   align-items:center;
 }
 `;
+const ImgWrapper = styled.div`
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  width:32px;
+  height:32px !important;
+  margin-right: 10px;
+  border-radius: 50%;
 
+  img {
+    width: auto;
+    height: 100%;
+  }
+`;
 const AccountButtons = ({ user, authenticated, logout }) => {
   return (
     <Wrapper>
       <ul>
         {authenticated ? (
           <li>
-            <p>Hello {user.firstName} {user.lastName}</p>
+            <ImgWrapper>
+              <img src={PROFILE_IMG_PATH + user.profileImage.filename} />
+            </ImgWrapper>
+            <p>
+              {user.firstName} {user.lastName}
+            </p>
           </li>
         ) : (
           <li />

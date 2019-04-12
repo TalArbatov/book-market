@@ -33,18 +33,32 @@ export const loginError = () => {
   };
 };
 export const loginSuccess = token => {
-  //add token to localStorage
+  return dispatch => {
+    //add token to localStorage
   localStorage.token = token;
   setAuthorizationToken(token);
   console.log("inside loginSuccess action: next line");
   console.log("token: " + token);
-  return {
-    type: TYPES.USER_LOGIN_SUCCESS,
-    payload: {
-      userJWT: require("jsonwebtoken").decode(token)
-    }
-  };
+  const user = require('jsonwebtoken').decode(token);
+  dispatch(userLoginSuccessFinal())
+  dispatch(fetchUser(user._id))
+
+  // dispatch(() => { return {
+  //   type: TYPES.USER_LOGIN_SUCCESS,
+  //   // payload: {
+  //   //   userJWT: require("jsonwebtoken").decode(token)
+  //   // }
+  // }});
+  
+  }
+ 
 };
+
+export const userLoginSuccessFinal = () => {
+  return {
+    type: TYPES.USER_LOGIN_SUCCESS
+  }
+}
 export const signup = form => {
   return dispatch => {
     console.log(form);
@@ -113,3 +127,56 @@ export const logoutSuccess = () => {
   };
 };
 
+export const fetchUser = (_id) => {
+  return dispatch => {
+    dispatch(fetchUserRequest());
+    axios.get('/api/account/fetchUser/' + _id).then(res => {
+      //console.log(res.data);
+      dispatch(fetchUserSuccess(res.data))
+    }).catch(err => {
+      console.warn(err);
+      dispatch(fetchUserError())
+    })
+  }
+}
+
+export const fetchUserSuccess = (user) => {
+  return {
+    type: TYPES.FETCH_USER_SUCCESS,
+    payload: user
+  }
+}
+export const fetchUserError = () => {
+  return {
+    type: TYPES.FETCH_USER_ERROR,
+  }
+}
+export const fetchUserRequest = () => {
+  return {
+    type: TYPES.FETCH_USER_REQUEST,
+  }
+}
+
+export const uploadUserImage = (formData) => {
+  return (dispatch) => {
+    return axios.post("/api/account/uploadPhoto", formData).then(res => {
+      console.log(res.data);
+      const userID = require('jsonwebtoken').decode(localStorage.token)._id;
+      dispatch(fetchUser(userID));
+    });
+  }
+}
+
+export const discardUserImage = (formData) => {
+  return (dispatch) => {
+    return axios.get("/api/account/discardUserImage").then(res => {
+      dispatch();
+    });
+  }
+}
+
+export const discardUserImageSuccess = () => {
+  return {
+    type: TYPES.DISCARD_USER_IMAGE_SUCCESS
+  }
+}
