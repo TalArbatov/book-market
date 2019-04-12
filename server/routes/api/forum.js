@@ -2,6 +2,9 @@ const router = require("express").Router();
 const Post = require("mongoose").model("Post");
 const passport = require("passport");
 
+const jwtAuth = passport.authenticate("jwt", { session: false });
+
+
 router.get("/view/post/", (req, res, next) => {
   Post.find({}, (err, posts) => {
     if (posts) {
@@ -18,8 +21,24 @@ router.get("/view/post/:id", (req, res, next) => {
     else res.status(500).send({ success: false, payload: error });
   });
 });
+/**
+ * date: Date,
+      content: String,
+      author: {
+        _id: String,
+        image: String
+      },
+ */
+router.use("/comments", jwtAuth);
+router.post('/comments/:_id', (req,res,next) => {
+  const postID = req.params._id;
+  console.log(req.body.comment);
+  Post.findOneAndUpdate({_id: postID}, {$push: {comments: req.body.comment}}, (err, doc) => {
+    if(!err) res.send({success: true})
+    else res.status(500).send({success: false, error: err})
+  });
+})
 
-const jwtAuth = passport.authenticate("jwt", { session: false });
 
 router.route("/").post(jwtAuth, (req, res, next) => {
   //TOOD: validate

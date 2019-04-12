@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import {connect} from 'react-redux';
 import * as ACTIONS from '../../actions/userActions';
-
+import ButtonWrapper from '../shared/ButtonWrapper';
 const defaultState = {
   form: {
     email: "",
@@ -21,20 +21,7 @@ const styles = {
   }
 };
 
-const ButtonWrapper = styled.div`
-  button {
-    padding: 8px 18px;
-    background: #815386;
-    border-radius: 4px;
-    color: #efefef;
-    cursor: pointer;
-    font-size: 0.95em;
-    font-weight: 100;
-  }
-  button:hover {
-    background: #4c394e;
-  }
-`;
+
 
 const Login = props => {
   const { classes } = props;

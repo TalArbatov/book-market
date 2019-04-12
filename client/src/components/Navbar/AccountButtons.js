@@ -56,7 +56,8 @@ li > div {
 }
 `;
 const ImgWrapper = styled.div`
-  display: inline-block;
+  display: flex;
+  justify-content:center;
   position: relative;
   overflow: hidden;
   width:32px;
