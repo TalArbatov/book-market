@@ -13,7 +13,8 @@ module.exports = {
         _id: user._id,
         email: user.email,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        userImage: user.profileImage.filename
       },
       JWT_SECRET, 
       //{expiresIn: '10h'}

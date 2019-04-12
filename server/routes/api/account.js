@@ -5,10 +5,10 @@ const User = require('mongoose').model('User');
 const fs = require('fs');
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, "./public/uploads");
+    cb(null, "./client/public/profile-images");
   },
   filename: function(req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now()+path.extname(file.originalname));
+    cb(null, Date.now()+path.extname(file.originalname));
   }
 });
 
@@ -23,32 +23,52 @@ const upload2 = multer({
   // you might also want to set some limits: https://github.com/expressjs/multer#limits
 });
 
+router.get('/fetchUser/:_id', (req,res,next) => {
+  console.log('inside fetch users')
+  console.log(req.params)
+  const userID = req.params._id;
+  User.findOne({_id: userID}, (err, user) => {
+    if(!err) res.send(user);
+    else res.status(500).send('error in /api/account/fetchUser/:_id')
+  })
+})
+
+router.get('/discardUserImage/:_id', (req,res,next) => {
+  const userID = req.params._id;
+  console.log('test: ' + userID)
+  const defaultProfileImage = {
+    filename: 'default.jpg',
+    dateUploaded: Date.now()
+  }
+  User.findByIdAndUpdate({_id: userID}, {$set: {'profileImage': defaultProfileImage}}, (err, doc) => {
+    if(!err) res.send({success: true})
+  })
+})
+
 router.post("/uploadPhoto", upload2.single("testFile"), (req, res, next) => {
   console.log(req.body)
   const userID = require('jsonwebtoken').decode(req.body.token)._id;
   console.log('userID: ' + userID);
-  const img = {
-    data: fs.readFileSync(req.file.path),
-    contentType: 'image/jpeg'
+  // const img = {
+  //   data: fs.readFileSync(req.file.path),
+  //   contentType: 'image/jpeg'
+  // }
+  const profileImage = {
+    filename: req.file.filename,
+    dateUploaded: Date.now()
   }
-  User.findOneAndUpdate({_id: userID}, {$set:{image: img}}, (err, doc) => {
+  User.findOneAndUpdate({_id: userID}, {$set:{profileImage: profileImage}}, (err, doc) => {
     if(!err) res.status(200).send({success: true});
     else res.sendStatus(500);
   })
 });
-function arrayBufferToBase64(buffer) {
-  var binary = '';
-  var bytes = [].slice.call(new Uint8Array(buffer));
-  bytes.forEach((b) => binary += String.fromCharCode(b));
-  return window.btoa(binary);
-};
 
-router.get('/getImage/:_id', (req,res,next) => {
-  User.findOne({_id: req.params._id}, (err, user) => {
-    if(!err) res.send(user.image)
-    else res.status(500).send({success: false})
-  })  
-})
+// router.get('/getImage/:_id', (req,res,next) => {
+//   User.findOne({_id: req.params._id}, (err, user) => {
+//     if(!err) res.send(user.profileImage.filename)
+//     else res.status(500).send({success: false})
+//   })  
+// })
 // router.post("/uploadPhoto", (req, res, next) => {
 //   // upload(req, res, err => {
 //   //   console.log(req);

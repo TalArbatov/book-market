@@ -36,13 +36,26 @@ const leftButtons = [
     path: '/forum'
   }
 ];
+const ImgWrapper = styled.div`
+  display: inline-block;
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
+
+  img {
+    width: auto;
+    height: 100%;
+  }
+`;
 
 const Navbar = props => {
   return (
     <Wrapper>
       <ButtonWrapper>
         <NavbarButtons buttons={leftButtons} />
-        <AccountButtons user={props.userReducer.user} authenticated={props.userReducer.authenticated} logout={() => {props.logout().then(res => {console.log(res)})}}/>
+        <AccountButtons userImage={props.userReducer.userImage} user={props.userReducer.user} authenticated={props.userReducer.authenticated} logout={() => {props.logout().then(res => {console.log(res)})}}/>
       </ButtonWrapper>
     </Wrapper>
   );

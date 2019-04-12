@@ -173,4 +173,3 @@ export const votePostRequest = () => {
     type:TYPES.VOTE_POST_REQUEST
   }
 }
-
