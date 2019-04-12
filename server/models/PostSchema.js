@@ -18,7 +18,10 @@ const PostSchema = mongoose.Schema({
     {
       date: Date,
       content: String,
-      author: String,
+      author: {
+        _id: String,
+        image: String
+      },
     }
   ]
 })

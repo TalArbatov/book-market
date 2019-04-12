@@ -47,10 +47,14 @@ const defaultModalState = {
 const VotePost = props => {
   const [getState, setState] = useState(defaultModalState);
   const vote = voteType => {
-    const isAuth = authenticated();
-    console.log('isAuth: ' + isAuth)
-    if (isAuth) props.votePost(props.postID, voteType);
-    else setState({ ...getState, isOpen: true });
+    // const isAuth = authenticated();
+    // console.log('isAuth: ' + isAuth)
+    // if (isAuth) props.votePost(props.postID, voteType);
+    // else setState({ ...getState, isOpen: true });
+    props.votePost(props.postID, voteType).then(res => {
+      if(!res.success)
+        setState({...getState, isOpen: true})
+    })
   };
 
   const upvoteColor = props.currentUserVote == "up" ? { color: "red" } : {};
