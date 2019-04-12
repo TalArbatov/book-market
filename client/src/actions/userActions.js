@@ -169,14 +169,19 @@ export const uploadUserImage = (formData) => {
 
 export const discardUserImage = (formData) => {
   return (dispatch) => {
-    return axios.get("/api/account/discardUserImage").then(res => {
-      dispatch();
+    const userID = require('jsonwebtoken').decode(localStorage.token)._id;
+
+    return axios.get("/api/account/discardUserImage/" + userID).then(res => {
+      //dispatch(discardUserImageSuccess());
+      const userID = require('jsonwebtoken').decode(localStorage.token)._id;
+      dispatch(fetchUser(userID));
+
     });
   }
 }
 
-export const discardUserImageSuccess = () => {
-  return {
-    type: TYPES.DISCARD_USER_IMAGE_SUCCESS
-  }
-}
+// export const discardUserImageSuccess = () => {
+//   return {
+//     type: TYPES.DISCARD_USER_IMAGE_SUCCESS
+//   }
+// }

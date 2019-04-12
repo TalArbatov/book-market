@@ -7,7 +7,8 @@ const UserSchema = mongoose.Schema({
   email: { type: String, required: true },
   //image: {data: Buffer, contentType: String},
   profileImage: {
-    filename: {type: String, default: 'default.jpg'}
+    filename: {type: String, default: 'default.jpg'},
+    dateUploaded: {type: Date}
   },
   password: { type: String, required: true }
   // orderHistory: [

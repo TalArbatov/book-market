@@ -3,13 +3,12 @@ import styled from "styled-components";
 import Dropzone from "react-dropzone";
 import axios from "axios";
 import config from "../../config";
-import {connect} from 'react-redux';
-import * as ACTIONS from '../../actions/userActions';
-
-
+import { connect } from "react-redux";
+import * as ACTIONS from "../../actions/userActions";
+import formatDate from "../../utils/formatDate";
+import ProfileImage from "./ProfileImage/ProfileImage";
 
 const PROFILE_IMG_PATH = config.PROFILE_IMG_PATH;
-
 
 const MainWindow = styled.div`
   border-left: 5px solid #4c394e;
@@ -38,8 +37,8 @@ const ImgWrapper = styled.div`
 `;
 const MyAccount = props => {
   const fileRef = React.createRef();
-  const [getFile, setFile] = useState(0);
-  const [getImgState, setImgState] = useState({ isLoaded: false, img: null });
+  // const [getFile, setFile] = useState(0);
+  // const [getImgState, setImgState] = useState({ isLoaded: false, img: null });
   const submitForm2 = e => {
     e.preventDefault();
     const file = getFile;
@@ -70,31 +69,39 @@ const MyAccount = props => {
     formData.append("testFile", files[0]);
     formData.append("token", localStorage.token);
     props.uploadUserImage(formData);
-    
   };
-  const arrayBufferToBase64 = buffer => {
-    var binary = "";
-    var bytes = [].slice.call(new Uint8Array(buffer));
-    bytes.forEach(b => (binary += String.fromCharCode(b)));
-    return window.btoa(binary);
+  // const arrayBufferToBase64 = buffer => {
+  //   var binary = "";
+  //   var bytes = [].slice.call(new Uint8Array(buffer));
+  //   bytes.forEach(b => (binary += String.fromCharCode(b)));
+  //   return window.btoa(binary);
+  // };
+
+  const discardImage = () => {
+    props.discardUserImage();
   };
 
   const getImage = () => {
     const _id = require("jsonwebtoken").decode(localStorage.token)._id;
-    axios.get("/api/account/getImage/" + _id).then(res => {
-      //const imgBuffer = res.data.data.data;
-      //console.log(imgBuffer);
-      // console.log(img)
-      //var base64Flag = "data:image/jpeg;base64,";
-      //var imageStr = arrayBufferToBase64(imgBuffer);
-      setImgState({ isLoaded: true, img: PROFILE_IMG_PATH + res.data });
-      console.log(res.data);
-    });
+    // axios.get("/api/account/getImage/" + _id).then(res => {
+    //   setImgState({ isLoaded: true, img: PROFILE_IMG_PATH + res.data });
+    //   console.log(res.data);
+    // });
   };
-
-  const profileImage = (<ImgWrapper>
-  <img src={getImgState.img} />
-</ImgWrapper>)
+  const imagePath =
+    PROFILE_IMG_PATH + props.userReducer.user.profileImage.filename;
+  const dateUploaded = formatDate(
+    props.userReducer.user.profileImage.dateUploaded
+  );
+  const profileImage = (
+    <div>
+      <ImgWrapper>
+        {/* <img src={getImgState.img.filename} /> */}
+        <img src={imagePath} />
+      </ImgWrapper>
+      <p>date uploaded: {dateUploaded}</p>
+    </div>
+  );
 
   return (
     <MainWindow>
@@ -118,22 +125,29 @@ const MyAccount = props => {
         <button type="submit">Upload</button>
       </form>
       <button onClick={getImage}>Get Image</button>
+      <button onClick={discardImage}>Discard Image</button>
       {/* {getImgState.isLoaded ? <div style={{borderRadius:'50%'}}><img style={{maxWidth:'90px', objectFit: 'contain'}} src={getImgState.img} /></div> : <div />} */}
-      {getImgState.isLoaded ? profileImage : <p>Not loaded yet.</p>}
-      
+      {/* {getImgState.isLoaded ? profileImage : <p>Not loaded yet.</p>} */}
+      {profileImage}
+      {/* <button onClick={}>open modal</button> */}
+      {/* <ProfileImage /> */}
     </MainWindow>
   );
 };
 const mapStateToProps = state => {
   return {
     userReducer: state.userReducer
-  }
-}
+  };
+};
 const mapDispatchToProps = dispatch => {
   return {
-    fetchUser : (_id) => dispatch(ACTIONS.fetchUser(_id)),
-    uploadUserImage : (formData) => dispatch(ACTIONS.uploadUserImage(formData))
-  }
-}
+    fetchUser: _id => dispatch(ACTIONS.fetchUser(_id)),
+    uploadUserImage: formData => dispatch(ACTIONS.uploadUserImage(formData)),
+    discardUserImage: () => dispatch(ACTIONS.discardUserImage())
+  };
+};
 
-export default connect(mapStateToProps,mapDispatchToProps)(MyAccount);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MyAccount);

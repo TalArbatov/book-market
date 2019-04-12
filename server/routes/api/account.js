@@ -35,7 +35,14 @@ router.get('/fetchUser/:_id', (req,res,next) => {
 
 router.get('/discardUserImage/:_id', (req,res,next) => {
   const userID = req.params._id;
-  User.findByIdAndUpdate({})
+  console.log('test: ' + userID)
+  const defaultProfileImage = {
+    filename: 'default.jpg',
+    dateUploaded: Date.now()
+  }
+  User.findByIdAndUpdate({_id: userID}, {$set: {'profileImage': defaultProfileImage}}, (err, doc) => {
+    if(!err) res.send({success: true})
+  })
 })
 
 router.post("/uploadPhoto", upload2.single("testFile"), (req, res, next) => {
@@ -47,7 +54,8 @@ router.post("/uploadPhoto", upload2.single("testFile"), (req, res, next) => {
   //   contentType: 'image/jpeg'
   // }
   const profileImage = {
-    filename: req.file.filename
+    filename: req.file.filename,
+    dateUploaded: Date.now()
   }
   User.findOneAndUpdate({_id: userID}, {$set:{profileImage: profileImage}}, (err, doc) => {
     if(!err) res.status(200).send({success: true});
@@ -55,12 +63,12 @@ router.post("/uploadPhoto", upload2.single("testFile"), (req, res, next) => {
   })
 });
 
-router.get('/getImage/:_id', (req,res,next) => {
-  User.findOne({_id: req.params._id}, (err, user) => {
-    if(!err) res.send(user.profileImage.filename)
-    else res.status(500).send({success: false})
-  })  
-})
+// router.get('/getImage/:_id', (req,res,next) => {
+//   User.findOne({_id: req.params._id}, (err, user) => {
+//     if(!err) res.send(user.profileImage.filename)
+//     else res.status(500).send({success: false})
+//   })  
+// })
 // router.post("/uploadPhoto", (req, res, next) => {
 //   // upload(req, res, err => {
 //   //   console.log(req);

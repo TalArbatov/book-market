@@ -38,8 +38,8 @@ const userReducer = (state = defaultState, action) => {
       }
     case TYPES.FETCH_USER_SUCCESS:
       return {...state, user: action.payload}
-    case TYPES.DISCARD_USER_IMAGE_SUCCESS:
-      return {...state, user: {...state.user, profileImage: defaultState.user}}
+    // case TYPES.DISCARD_USER_IMAGE_SUCCESS:
+    //   return {...state, user: {...state.user, profileImage: defaultState.user.profileImage}}
     default:
       return state;
   }
