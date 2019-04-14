@@ -8,21 +8,19 @@ import Comments from "./Comments";
 import PostHeader from "./PostHeader";
 import config from "../../../config";
 
-
 const PostContent = styled.div`
-  height:100%;
-  width:100%;
-  padding:60px;
-  padding-left:45px;
-`
-
+  height: 100%;
+  width: 100%;
+  padding: 60px;
+  padding-left: 45px;
+`;
 
 class ViewPost extends React.PureComponent {
- imagePath =
-  config.PROFILE_IMG_PATH + this.props.userReducer.user.profileImage.filename;
+ //imagePath = config.PROFILE_IMG_PATH + this.props.forumReducer.currentPost.author.imagePath;
 
   state = {
-    formattedDate: ""
+    formattedDate: "",
+    imagePath: config.PROFILE_IMG_PATH + this.props.forumReducer.currentPost.author.imagePath
   };
   componentDidMount() {
     this.props.fetchPost(this.props.match.params._id).then(res => {
@@ -36,7 +34,7 @@ class ViewPost extends React.PureComponent {
     const {
       title,
       content,
-      authorHeader,
+      author,
       topic,
       date,
       _id,
@@ -45,10 +43,17 @@ class ViewPost extends React.PureComponent {
 
     return (
       <PostContent>
-        <PostHeader imagePath={this.imagePath} title={title} authorHeader={authorHeader} formattedDate={this.state.formattedDate}/>
+        <PostHeader
+          imagePath={this.state.imagePath}
+          title={title}
+          author={author}
+          formattedDate={this.state.formattedDate}
+          content={content}
+          imagePath2={config.PROFILE_IMG_PATH + this.props.forumReducer.currentPost.author.imagePath}
+        />
 
-        <p style={{ whiteSpace: "pre-line" }}>Content: {content}</p>
-        <p>Author: {authorHeader}</p>
+        {/* <p style={{ whiteSpace: "pre-line" }}>Content: {content}</p> */}
+        <p>Author: {author.username}</p>
         <p>Topic: {topic}</p>
         <CreateComment postID={_id} />
         {comments != null && (

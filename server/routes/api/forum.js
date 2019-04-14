@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Post = require("mongoose").model("Post");
 const Comment = require("mongoose").model("Comment");
 const passport = require("passport");
-
+const User = require('mongoose').model('User');
 const jwtAuth = passport.authenticate("jwt", { session: false });
 
 
@@ -19,7 +19,7 @@ router.get("/view/post/", (req, res, next) => {
 router.get("/view/post/:id", (req, res, next) => {
   Post.findOne({ _id: req.params.id }, (err, post) => {
     if (post) res.status(200).send({ success: true, payload: post });
-    else res.status(500).send({ success: false, payload: error });
+    else res.status(500).send({ success: false, payload: err });
   });
 });
 /**
@@ -69,23 +69,23 @@ router.post('/comments/:_id', (req,res, next) => {
   })
 })
 
-router.use("/comments", jwtAuth);
-router.post('/comments/:_id', (req,res,next) => {
-  const postID = req.params._id;
-  const comment = req.body;
-  comment.votes = 0;
-  comment.voters = []
-  const NewComment = new Comment(comment);
-  NewComment.save((err, doc) => {
-    if(!err) res.send({success: true});
-    else res.send({success: false, payload: 'cannot create comment'})
-  });
+// router.use("/comments", jwtAuth);
+// router.post('/comments/:_id', (req,res,next) => {
+//   const postID = req.params._id;
+//   const comment = req.body;
+//   comment.votes = 0;
+//   comment.voters = []
+//   const NewComment = new Comment(comment);
+//   NewComment.save((err, doc) => {
+//     if(!err) res.send({success: true});
+//     else res.send({success: false, payload: 'cannot create comment'})
+//   });
   
-  // Post.findOneAndUpdate({_id: postID}, {$push: {comments: comment}}, (err, doc) => {
-  //   if(!err) res.send({success: true})
-  //   else res.status(500).send({success: false, error: err})
-  // });
-})
+//   // Post.findOneAndUpdate({_id: postID}, {$push: {comments: comment}}, (err, doc) => {
+//   //   if(!err) res.send({success: true})
+//   //   else res.status(500).send({success: false, error: err})
+//   // });
+// })
 
 
 router.route("/").post(jwtAuth, (req, res, next) => {
@@ -93,35 +93,49 @@ router.route("/").post(jwtAuth, (req, res, next) => {
   //1. get author
   console.log("started creating post...");
 
-  const firstName = require("jsonwebtoken").decode(req.body.token).firstName;
-  const lastName = require("jsonwebtoken").decode(req.body.token).lastName;
-  const authorEmail = require("jsonwebtoken").decode(req.body.token).email;
+  // const firstName = require("jsonwebtoken").decode(req.body.token).firstName;
+  // const lastName = require("jsonwebtoken").decode(req.body.token).lastName;
+  // const authorEmail = 
 
-  const author = `${firstName} ${lastName}`;
-  const date = Date.now();
+  const userID = require("jsonwebtoken").decode(req.body.token)._id;
+  User.findOne({_id: userID}, (err, user) => {
+    if(err) res.send({success: false, payload: err})
+    else {
+      const author = {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        username: user.username,
+        imagePath: user.profileImage.filename,
+      }
+      const date = Date.now();
 
-  const { title, content, topic } = req.body.form;
-  const newPost = new Post({
-    title,
-    content,
-    topic: topic,
-    votes: 0,
-    authorHeader: author,
-    authorEmail: authorEmail,
-    date,
-    comments: []
-  });
-  newPost.save((err, post) => {
-    console.log("err: " + err);
-    console.log(post);
-    if (err != null) {
-      res.status(500).send(err);
-      console.log("error in newPost.save");
-    } else {
-      console.log("success in newPost.save");
-      res.send({ success: true, payload: post });
+      const { title, content, topic } = req.body.form;
+      const newPost = new Post({
+        title,
+        content,
+        topic: topic,
+        votes: 0,
+        author: author,
+        date,
+      });
+      newPost.save((err, post) => {
+        console.log("err: " + err);
+        console.log(post);
+        if (err != null) {
+          console.log("error in newPost.save");
+
+          res.status(500).send(err);
+        } else {
+          console.log("success in newPost.save");
+          res.send({ success: true, payload: post });
+        }
+      });
     }
-  });
+  })
+  //const author = `${firstName} ${lastName}`;
+ 
 });
 
 router.get("/getHeaders", (req, res, next) => {

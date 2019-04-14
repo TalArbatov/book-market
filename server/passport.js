@@ -41,21 +41,26 @@ passport.use(
 passport.use(
   new localStrategy(
     {
-      usernameField: "email",
+      usernameField: "username",
       passwordField: "password"
     },
-    (email, password, done) => {
+    (username, password, done) => {
       //Find the user, given the email
       //If not, handle that
-      User.findOne({ email }, (err, user) => {
+      User.findOne({ username }, (err, user) => {
+        console.log("LOGIN ERROR: didnt find any user with that username");
         if (!user) return done(null, false);
         //if user found, check if password correct
         //if correct, return user, otherwise, handle that.
         else {
           user.comparePassword(password, (err, isMatch) => {
-            if (err) done("Error inside passport.js localStarategy", false);
-            else if (!isMatch)
+            if (err) {
+              console.log("LOGIN ERROR: General err comparing passwords");
+              done("Error inside passport.js localStarategy", false);
+            } else if (!isMatch) {
+              console.log('LOGIN ERROR: passwords dont match')
               done("MISMATCH inside passport.js localStarategy", false);
+            }
             else done(null, user);
           });
         }

@@ -6,7 +6,7 @@ const authHelper = require("../helpers/authHelper");
 module.exports = {
   loginSuccess: (req, res, next) => {
     console.log("successful login");
-    User.findOne({ email: req.body.email }, (err, user) => {
+    User.findOne({ username: req.body.username }, (err, user) => {
       if (!user) res.send({ success: false, error: "Weird...!" });
       else {
         const token = authHelper.signJWT(user)

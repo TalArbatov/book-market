@@ -1,6 +1,7 @@
 import * as TYPES from "./actionTypes";
 import axios from "axios";
 import setAuthorizationToken from "../utils/setAuthorizationToken";
+
 export const login = form => {
   return dispatch => {
     dispatch(loginRequest());

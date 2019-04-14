@@ -24,7 +24,7 @@ const Title = styled.p`
 const SubWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: start;
 `;
 const Text = styled.div`
   margin-left: 60px;
@@ -40,21 +40,26 @@ const AccountWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
 `;
+
+const Content = styled.p`
+white-space:pre-line;
+`
 const PostHeader = props => {
   return (
     <Wrapper>
       <SubWrapper>
         <AccountWrapper>
           <ImgWrapper>
-            <img src={props.imagePath} />
+            <img src={props.imagePath2} />
           </ImgWrapper>
-          <Information>{props.authorHeader}</Information>
+          <Information>{props.author.username}</Information>
         </AccountWrapper>
         <Text>
           <Title>{props.title}</Title>
-          <Information>
-            Posted by {props.authorHeader}, at {props.formattedDate}
-          </Information>
+          <p>
+            {props.formattedDate}
+          </p>
+          <Content>{props.content}</Content>
         </Text>
       </SubWrapper>
     </Wrapper>

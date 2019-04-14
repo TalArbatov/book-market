@@ -4,8 +4,6 @@ const PostSchema = mongoose.Schema({
   topic: String,
   title: String,
   content: String,
-  authorHeader: String,
-  authorEmail: String,
   date: Date,
   votes: Number,
   voters: [
@@ -14,6 +12,14 @@ const PostSchema = mongoose.Schema({
       voteType: String
     }
   ],
+  author: {
+    _id: String,
+    firstName: String,
+    lastName: String,
+    email: String,
+    username: String,
+    imagePath: String,
+  },
   comments: [
     {
       date: Date,

@@ -2,7 +2,11 @@ import * as TYPES from "../actions/actionTypes";
 
 const defaultState = {
   posts: [],
-  currentPost: {},
+  currentPost: {
+    author: {
+      imagePath: '/default.jpg'
+    }
+  },
   isLoading: false,
   headers: {},
   currentComments: []

@@ -6,6 +6,7 @@ const UserSchema = mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true },
   //image: {data: Buffer, contentType: String},
+  username: {type: String, required: true},
   profileImage: {
     filename: {type: String, default: 'default.jpg'},
     dateUploaded: {type: Date}
