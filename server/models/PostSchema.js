@@ -22,6 +22,13 @@ const PostSchema = mongoose.Schema({
         _id: String,
         image: String
       },
+      votes: Number,
+      voters: [
+        {
+          _id: String,
+          voteType: String
+        }
+      ]
     }
   ]
 })

@@ -10,6 +10,7 @@ const defaultState = {
   form: {
     firstName: "",
     lastName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: ""
@@ -53,6 +54,8 @@ const Signup = props => {
     if (form.firstName.length == 0) err = "Please enter first name.";
     else if (form.lastName.length == 0) err = "Please enter last name.";
     else if (form.email.length == 0) err = "Please enter Email Address.";
+    else if (form.username.length < 4 || form.username.length > 12) err = "Username must be between 4 and 12 characters.";
+
     else if (form.email.length < 6) err = "Invalid Email address.";
     else if (form.email.password == 0) err = "Please enter Password.";
     else if (form.password.length < 3)
@@ -108,6 +111,18 @@ const Signup = props => {
                   variant="outlined"
                   classes={{ root: classes.root }}
                   onChange={e => updateForm(e.target.value, "lastName")}
+                />{" "}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <TextField
+                  required
+                  label="Username"
+                  margin="normal"
+                  variant="outlined"
+                  classes={{ root: classes.root }}
+                  onChange={e => updateForm(e.target.value, "username")}
                 />{" "}
               </td>
             </tr>

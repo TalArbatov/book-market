@@ -23,6 +23,8 @@ module.exports = {
     let err = null;
     if (form.firstName.length == 0) err = "Please enter first name.";
     else if (form.lastName.length == 0) err = "Please enter last name.";
+    else if (form.username.length < 4 || form.username.length > 12) err = "Username must be between 4 and 12 characters.";
+
     else if (form.email.length == 0) err = "Please enter Email Address.";
     else if (form.email.length < 6) err = "Invalid Email address.";
     else if (form.email.password == 0) err = "Please enter Password.";
@@ -35,22 +37,27 @@ module.exports = {
       next();
     } else {
       User.findOne({ email: form.email }, (any, user) => {
-        if (user) res.send({ success: false, error: "Existing User." });
-        else {
-          const { firstName, lastName, email, password } = form;
-          const newUser = new User({
-            firstName,
-            lastName,
-            email,
-            password
-          });
-          newUser.save((err, resUser) => {
-          //sign JWT token
-          const token = authHelper.signJWT(resUser);
-          res.send({ success: true, token });  
-          });
-          
-        }
+        if (user) res.send({ success: false, error: "Email already exists." });
+        else User.findOne({username: form.username}, (err, user) => {
+          if (user) res.send({ success: false, error: "Username already exists" });
+          else {
+            const { firstName, lastName, username, email, password } = form;
+            const newUser = new User({
+              firstName,
+              lastName,
+              username,
+              email,
+              password
+            });
+            newUser.save((err, resUser) => {
+            //sign JWT token
+            const token = authHelper.signJWT(resUser);
+            res.send({ success: true, token });  
+            });
+            
+          }
+        })
+        
       });
     }
     //user.comparePassword(password, (err, isMatch) => {})

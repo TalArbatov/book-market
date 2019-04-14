@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Post = require("mongoose").model("Post");
+const Comment = require("mongoose").model("Comment");
 const passport = require("passport");
 
 const jwtAuth = passport.authenticate("jwt", { session: false });
@@ -29,14 +30,61 @@ router.get("/view/post/:id", (req, res, next) => {
         image: String
       },
  */
+
+router.post('/comments/:_id', (req,res, next) => {
+  const postID = req.params.postID;
+  Comment.find({postID: postID}, (err, comments) => {
+    if(err) res.send({success: false, payload: 'cannot find comments'});
+    else {
+      console.log("inside fetchComments");
+      //handle comment data
+      //return if user voted the post
+      //do not send voters array to client - sensitive data
+
+      //if user not logged-in, token is empty, than dont return currentUserVote
+      let userID = null;
+        userID = require("jsonwebtoken").decode(req.body.token)._id;
+
+      
+
+      const newComments = comments.map(comment => {
+        const newComment = { ...comment._doc };
+        if (userID != null) {
+          const voter = newComment.voters.find(voter => {
+            return voter._id == userID;
+          });
+          //console.log("voter: " + voter);
+           newComment.currentUserVote = null;
+          if (voter != undefined) newComment.currentUserVote = voter.voteType;
+        } else {
+          //use hasn't logged - in, return empty currentUserVote
+          newComment.currentUserVote = null;
+        }
+        delete newComment.voters;
+        return newComment;
+      });
+
+      res.send({success: true, payload: newComments})
+    }
+  })
+})
+
 router.use("/comments", jwtAuth);
 router.post('/comments/:_id', (req,res,next) => {
   const postID = req.params._id;
-  console.log(req.body.comment);
-  Post.findOneAndUpdate({_id: postID}, {$push: {comments: req.body.comment}}, (err, doc) => {
-    if(!err) res.send({success: true})
-    else res.status(500).send({success: false, error: err})
+  const comment = req.body;
+  comment.votes = 0;
+  comment.voters = []
+  const NewComment = new Comment(comment);
+  NewComment.save((err, doc) => {
+    if(!err) res.send({success: true});
+    else res.send({success: false, payload: 'cannot create comment'})
   });
+  
+  // Post.findOneAndUpdate({_id: postID}, {$push: {comments: comment}}, (err, doc) => {
+  //   if(!err) res.send({success: true})
+  //   else res.status(500).send({success: false, error: err})
+  // });
 })
 
 
@@ -161,9 +209,6 @@ router.use("/votePost", jwtAuth);
 router.post("/votePost", (req, res, next) => {
   const { token, postID, voteType } = req.body;
   const userID = require("jsonwebtoken").decode(token)._id;
-  // console.log('userID: ' + require('jsonwebtoken').decode(token)._id);
-  // console.log('postID:' + postID);
-  // console.log('voteType: ' + voteType);
 
   const newVoter = {
     _id: userID,
@@ -227,5 +272,75 @@ router.post("/votePost", (req, res, next) => {
     } else res.status(500).send("err4");
   });
 });
+
+
+router.use("/voteComment", jwtAuth);
+router.post("/voteComment/", (req,res,next) => {
+  const {commentID, token, voteType} = req.body;
+  const userID = require("jsonwebtoken").decode(token)._id;
+
+  const newVoter = {
+    _id: userID,
+    voteType: voteType
+  };
+
+  let voteInt = 0;
+  if (voteType == "up") voteInt = 1;
+  else voteInt = -1;
+
+  Comment.findOne({ _id: commentID }, (err, comment) => {
+    if (comment) {
+      const existingVote = comment.voters.find(voter => {
+        return voter._id == userID;
+      });
+      //if user already voted
+      if (existingVote) {
+        console.log("EXISTING VOTE");
+        //if old_user_vote == new_user_vote
+        //then user un-votes, remove user voter instance and undo his effect on post.vote integer
+        if (existingVote.voteType == voteType) {
+          Comment.findOneAndUpdate(
+            { _id: commentID },
+            {
+              $pull: { voters: { _id: userID } },
+              $inc: { votes: -1 * voteInt }
+            },
+            (err, doc) => {
+              if (!err) res.send({ success: true });
+              else res.status(500).send("cannot update (type: 1)");
+            }
+          );
+        }
+        //else, user votes a different vote,
+        //cancel his old vote and change his voter to current voteType
+        else {
+          console.log("DIFFERET VOTE");
+          Comment.findOneAndUpdate(
+            { _id: commentID, "voters._id": userID },
+            {
+              $set: { "voters.$.voteType": voteType },
+              $inc: { votes: 2 * voteInt }
+            },
+            (err, doc) => {
+              if (!err) res.send({ success: true });
+              else res.status(500).send("cannot update (type: 2)");
+            }
+          );
+        }
+      }
+      //else, a new vote
+      else {
+        Comment.findOneAndUpdate(
+          { _id: commentID },
+          { $push: { voters: newVoter }, $inc: { votes: voteInt } },
+          (err, doc) => {
+            if (!err) res.send({ success: true });
+            else res.status(500).send("cannot update (type: 3)");
+          }
+        );
+      }
+    } else res.status(500).send("cannot find comment to update.");
+  });
+})
 
 module.exports = router;
