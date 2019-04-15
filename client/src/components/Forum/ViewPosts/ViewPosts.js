@@ -69,8 +69,20 @@ const StyledTr = styled.tr`
     font-weight:400;
   }
 `;
+const MainWindow = styled.div`
+  border-left: 5px solid #4c394e;
+  background: #fff;
+  width: 80vw;
+  min-width: 400px;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+`;
 const ViewPosts = props => {
   return (
+    <MainWindow>
     <Table>
       <tbody>
         <StyledTr>
@@ -88,6 +100,7 @@ const ViewPosts = props => {
         <TopicGroupList topicGroups={state.topicGroups} />
       </tbody>
     </Table>
+    </MainWindow>
   );
 };
 

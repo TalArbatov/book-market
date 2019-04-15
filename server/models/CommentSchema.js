@@ -5,7 +5,11 @@ const CommentSchema = mongoose.Schema({
   content: String,
   author: {
     _id: String,
-    image: String
+    firstName: String,
+    lastName: String,
+    username: String,
+    email: String,
+    imagePath: String
   },
   votes: Number,
   voters: [

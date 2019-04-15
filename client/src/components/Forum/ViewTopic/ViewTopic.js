@@ -26,7 +26,17 @@ const StyledTr = styled.tr`
     font-weight: 400;
   }
 `;
-
+const MainWindow = styled.div`
+  border-left: 5px solid #4c394e;
+  background: #fff;
+  width: 80vw;
+  min-width: 400px;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+`;
 const topics = [
   { title: "Announcments", address: "announcments" },
   { title: "Patch Notes", address: "patch-notes" },
@@ -133,6 +143,7 @@ class ViewTopic extends React.PureComponent {
     pageNumbers.sort((a, b) => a - b);
 
     return (
+      <MainWindow>
       <Wrapper>
         <h2>{topic.title}</h2>
         <Header />
@@ -153,6 +164,7 @@ class ViewTopic extends React.PureComponent {
           </tbody>
         </Table>
       </Wrapper>
+      </MainWindow>
     );
   }
 }

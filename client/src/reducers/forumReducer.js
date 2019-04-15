@@ -54,6 +54,7 @@ const forumReducer = (state = defaultState, action) => {
       return { ...state, posts: action.payload };
     case TYPES.VOTE_POST_SUCCESS:
       //const userID = require("jsonwebtoken").decode(localStorage.token)._id;
+      const newCurrentPost = {...state.currentPost}
       console.log("action payload: "); //PostID, voteType
       console.log(action.payload);
       const { postID, voteType } = action.payload;
@@ -66,6 +67,9 @@ const forumReducer = (state = defaultState, action) => {
             console.log("user hasnt voted");
             post.currentUserVote = voteType;
             post.votes += voteInt;
+
+            newCurrentPost.currentUserVote = voteType;
+            newCurrentPost.votes += voteInt
           }
           //if user HAS voted before, now he re-votes
           else {
@@ -74,18 +78,26 @@ const forumReducer = (state = defaultState, action) => {
               console.log("user already voted, votes the same again");
               post.currentUserVote = undefined;
               post.votes -= voteInt;
+              newCurrentPost.currentUserVote = undefined;
+              newCurrentPost.votes -= voteInt;
+
+
             }
             //user votes one thing, and then re-votes the other
             else {
               console.log("user already voted, votes the opposite now");
               post.currentUserVote = voteType;
               post.votes += voteInt * 2;
+
+              newCurrentPost.currentUserVote = voteType;
+              newCurrentPost.votes += voteInt * 2;
+
             }
           }
           return post;
         } else return post;
       });
-      return { ...state, posts: newPosts };
+      return { ...state, posts: newPosts, currentPost: newCurrentPost };
     case TYPES.VOTE_COMMENT_SUCCESS:
       //const userID2 = require("jsonwebtoken").decode(localStorage.token)._id;
       //const { commentID, voteType } = action.payload;
@@ -121,7 +133,8 @@ const forumReducer = (state = defaultState, action) => {
       return { ...state, posts: newPosts };
     case TYPES.FETCH_COMMENTS_SUCCESS:
       return { ...state, currentComments: action.payload };
-
+    case TYPES.ADD_COMMENT_SUCCESS:
+      return {...state, currentComments: [action.payload, ...state.currentComments]}
     default:
       return state;
   }

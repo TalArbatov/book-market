@@ -113,7 +113,7 @@ export const fetchPost = _id => {
   return dispatch => {
     dispatch(fetchPostRequest());
     return axios
-      .get("/api/forum/view/post/" + _id)
+      .post("/api/forum/view/post/" + _id, {token: localStorage.token})
       .then(res => {
         console.log(res.data);
         dispatch(fetchPostSuccess(res.data.payload));
@@ -152,7 +152,7 @@ export const voteComment = ( commentID, voteType) => {
       token: localStorage.token
     }
     dispatch(votePostRequest());
-    axios.post('/api/forum/voteComment', data).then(res => {
+    return axios.post('/api/forum/voteComment', data).then(res => {
       console.log(res.data);
       dispatch(voteCommentSuccess(commentID, voteType));
       return {success: true};
@@ -232,16 +232,27 @@ export const addComment = (comment, postID) => {
   //author: {_id, image}
   return dispatch => {
     dispatch(addCommentRequest());
+    const newComment = {...comment, token: localStorage.token}
     return axios
-      .post("/api/forum/comments/" + postID, comment)
+      .post("/api/forum/createComment/" + postID, newComment)
       .then(res => {
+        if(res.data.success) {
         console.log(res.data);
-        dispatch(fetchPost(postID));
-        dispatch(addCommentSuccess());
+        //dispatch(fetchPost(postID));
+        const comment = res.data.payload;
+        dispatch(addCommentSuccess(comment));
+        return {success: true}
+        }
+        else {
+          console.warn(res.payload);
+        dispatch(addCommentError());
+        return {success: false, payload: res.payload}
+        }
       })
       .catch(err => {
         console.warn(err);
         dispatch(addCommentError());
+        return {success: false, payload: err.toString()}
       });
   };
 };
@@ -256,9 +267,10 @@ export const addCommentError = () => {
     type: TYPES.ADD_COMMENT_ERROR
   };
 };
-export const addCommentSuccess = () => {
+export const addCommentSuccess = (comment) => {
   return {
-    type: TYPES.ADD_COMMENT_SUCCESS
+    type: TYPES.ADD_COMMENT_SUCCESS,
+    payload:comment,
   };
 };
 

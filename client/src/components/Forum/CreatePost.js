@@ -29,6 +29,17 @@ const Wrapper = styled.div`
     flex-direction:column;
   }
 `;
+const MainWindow = styled.div`
+  border-left: 5px solid #4c394e;
+  background: #fff;
+  width: 80vw;
+  min-width: 400px;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+`;
 const SubWrapper = styled.div`
 width:60%;
   margin: 25px 0;
@@ -92,6 +103,7 @@ const CreatePost = props => {
   //   setState({...getState, form: {...getState.form, topic: input}})
   // }
   return (
+    <MainWindow>
     <Wrapper>
       <form onSubmit={submitForm}>
         <div>
@@ -160,6 +172,7 @@ const CreatePost = props => {
       </form>
       <p style={{color:'red'}}>{getState.error}</p>
     </Wrapper>
+    </MainWindow>
   );
 };
 

@@ -11,7 +11,13 @@ const UserSchema = mongoose.Schema({
     filename: {type: String, default: 'default.jpg'},
     dateUploaded: {type: Date}
   },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  dateJoined: Date,
+  forum: {
+    postsNum: Number,
+    commentsNum: Number
+    //rank [rookie, appreitence, average, advanced, mater, elite, ....]
+  }
   // orderHistory: [
   //   {
   //     books: [

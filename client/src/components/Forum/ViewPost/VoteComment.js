@@ -47,12 +47,15 @@ const VoteComment = props => {
   const [getState, setState] = useState(defaultModalState);
 
   const vote = voteType => {
-    props.voteComment(props.comment._id, voteType)
+    props.voteComment(props.comment._id, voteType).then(res => {
+      if(!res.success) {
+        setState({...getState, isOpen: true})
+      }
+    })
   };
 
   const upvoteColor = props.comment.currentUserVote == "up" ? { color: "red" } : {};
   const downvoteColor = props.comment.currentUserVote == "down" ? { color: "red" } : {};
-  console.log(props.comment)
   return (
     <>
       <Wrapper>
