@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const Post = require("mongoose").model("Post");
+const Comment = require("mongoose").model("Comment");
 const passport = require("passport");
-
+const User = require("mongoose").model("User");
 const jwtAuth = passport.authenticate("jwt", { session: false });
-
-
+const forumHelper = require("../../helpers/forumHelper");
 router.get("/view/post/", (req, res, next) => {
   Post.find({}, (err, posts) => {
     if (posts) {
@@ -15,65 +15,159 @@ router.get("/view/post/", (req, res, next) => {
     }
   });
 });
-router.get("/view/post/:id", (req, res, next) => {
-  Post.findOne({ _id: req.params.id }, (err, post) => {
-    if (post) res.status(200).send({ success: true, payload: post });
-    else res.status(500).send({ success: false, payload: error });
+
+router.post("/view/post/:id", async (req, res, next) => {
+  //fetchPost
+
+  let userID = null;
+  try {
+    userID = require("jsonwebtoken").decode(req.body.token)._id;
+  } catch (e) {}
+  console.log(req.body);
+  console.log("inside fetchPost: userID: " + userID);
+  // Post.findOne({ _id: req.params.id }, (err, post) => {
+  //   if (err) res.send({ success: false, payload: err });
+  //   else {
+  //     let newPost = {...post._doc, currentUserVote: null}
+  //     if (userID != null) {
+  //       const userVote = post.voters.find(voter => {
+  //         return voter._id == userID;
+  //       });
+  //       if(userVote != null && userVote != undefined)
+  //         newPost.currentUserVote = userVote.voteType
+  //     }
+  //     delete newPost.voters;
+  //     res.send({success: true, payload: newPost});
+  //   }
+  // });
+  const postID = req.params.id;
+  Post.findOne({ _id: postID }, (err1, post) => {
+    if (err1) res.send({ success: false, payload: err1 });
+    else {
+      User.findOne({ _id: userID }, (err2, user) => {
+        if (err2) res.send({ success: true, payload: err2 });
+        else {
+          const newPost = forumHelper.handlePost3(post._doc, user);
+          res.send({ success: true, payload: newPost });
+        }
+      });
+      //console.log(post._doc);
+    }
+  });
+  //const post =await forumHelper.handlePost2(postID, userID);
+  //console.log(post)
+  //res.send({success: true, payload: post})
+});
+
+router.post("/comments/:postID", (req, res, next) => {
+  //fetch all comments on a single post
+  const postID = req.params.postID;
+  Comment.find({ postID: postID }, (err, comments) => {
+    if (err) res.send({ success: false, payload: "cannot find comments" });
+    else {
+      console.log("inside fetchComments");
+      //handle comment data
+      //return if user voted the post
+      //do not send voters array to client - sensitive data
+
+      //if user not logged-in, token is empty, than dont return currentUserVote
+      let userID = null;
+
+      try {
+        userID = require("jsonwebtoken").decode(req.body.token)._id;
+      } catch (e) {}
+      const toFetch = comments.filter(comment => {
+        return postID == comment.postID;
+      });
+      console.log("toFetch comments: " + toFetch.length);
+      console.log("postID: " + postID);
+      const newComments = toFetch.map(comment => {
+        const newComment = { ...comment._doc };
+        if (userID != null) {
+          const voter = newComment.voters.find(voter => {
+            return voter._id == userID;
+          });
+          //console.log("voter: " + voter);
+          newComment.currentUserVote = null;
+          if (voter != undefined) newComment.currentUserVote = voter.voteType;
+        } else {
+          //use hasn't logged - in, return empty currentUserVote
+          newComment.currentUserVote = null;
+        }
+        delete newComment.voters;
+        return newComment;
+      });
+
+      res.send({ success: true, payload: newComments });
+    }
   });
 });
-/**
- * date: Date,
-      content: String,
-      author: {
-        _id: String,
-        image: String
-      },
- */
-router.use("/comments", jwtAuth);
-router.post('/comments/:_id', (req,res,next) => {
-  const postID = req.params._id;
-  console.log(req.body.comment);
-  Post.findOneAndUpdate({_id: postID}, {$push: {comments: req.body.comment}}, (err, doc) => {
-    if(!err) res.send({success: true})
-    else res.status(500).send({success: false, error: err})
-  });
-})
 
+router.use("/createComment/:_id", jwtAuth);
+router.post("/createComment/:_id", (req, res, next) => {
+  const postID = req.params._id;
+  const comment = req.body;
+  comment.votes = 0;
+  comment.voters = [];
+  const NewComment = new Comment(comment);
+  NewComment.save((err, doc) => {
+    if (!err) res.send({ success: true, payload: doc });
+    else res.send({ success: false, payload: "Error while creating comment." });
+  });
+
+  // Post.findOneAndUpdate({_id: postID}, {$push: {comments: comment}}, (err, doc) => {
+  //   if(!err) res.send({success: true})
+  //   else res.status(500).send({success: false, error: err})
+  // });
+});
 
 router.route("/").post(jwtAuth, (req, res, next) => {
   //TOOD: validate
   //1. get author
   console.log("started creating post...");
 
-  const firstName = require("jsonwebtoken").decode(req.body.token).firstName;
-  const lastName = require("jsonwebtoken").decode(req.body.token).lastName;
-  const authorEmail = require("jsonwebtoken").decode(req.body.token).email;
+  // const firstName = require("jsonwebtoken").decode(req.body.token).firstName;
+  // const lastName = require("jsonwebtoken").decode(req.body.token).lastName;
+  // const authorEmail =
 
-  const author = `${firstName} ${lastName}`;
-  const date = Date.now();
+  const userID = require("jsonwebtoken").decode(req.body.token)._id;
+  User.findOne({ _id: userID }, (err, user) => {
+    if (err) res.send({ success: false, payload: err });
+    else {
+      const author = {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        username: user.username,
+        imagePath: user.profileImage.filename
+      };
+      const date = Date.now();
 
-  const { title, content, topic } = req.body.form;
-  const newPost = new Post({
-    title,
-    content,
-    topic: topic,
-    votes: 0,
-    authorHeader: author,
-    authorEmail: authorEmail,
-    date,
-    comments: []
-  });
-  newPost.save((err, post) => {
-    console.log("err: " + err);
-    console.log(post);
-    if (err != null) {
-      res.status(500).send(err);
-      console.log("error in newPost.save");
-    } else {
-      console.log("success in newPost.save");
-      res.send({ success: true, payload: post });
+      const { title, content, topic } = req.body.form;
+      const newPost = new Post({
+        title,
+        content,
+        topic: topic,
+        votes: 0,
+        author: author,
+        date
+      });
+      newPost.save((err, post) => {
+        console.log("err: " + err);
+        console.log(post);
+        if (err != null) {
+          console.log("error in newPost.save");
+
+          res.status(500).send(err);
+        } else {
+          console.log("success in newPost.save");
+          res.send({ success: true, payload: post });
+        }
+      });
     }
   });
+  //const author = `${firstName} ${lastName}`;
 });
 
 router.get("/getHeaders", (req, res, next) => {
@@ -104,11 +198,6 @@ router.get("/getHeaders", (req, res, next) => {
         relaventPosts.map(post => {
           return (relaventCommentsNum += post.comments.length);
         });
-        console.log(
-          `Topic: ${topic}, posts: ${
-            relaventPosts.length
-          } comments: ${relaventCommentsNum}`
-        );
         headers[topic.address] = {
           posts: relaventPosts.length,
           comments: relaventCommentsNum
@@ -121,49 +210,71 @@ router.get("/getHeaders", (req, res, next) => {
 });
 
 router.post("/fetchPostsByTopic/:topic", (req, res, next) => {
-  Post.find({ topic: req.params.topic }, (err, posts) => {
+  let userID = null;
+  try {
+    userID = require("jsonwebtoken").decode(req.body.token)._id;
+  } catch (e) {}
+
+  Post.find({ topic: req.params.topic }, (err1, posts) => {
     if (posts) {
-      console.log("inside fetchPosts");
-      //handle posta data
-      //return if user voted the post
-      //do not send voters array to client - sensitive data
-
-      //if user not logged-in, token is empty, than dont return currentUserVote
-      let userID = null;
-
-      try {
-        userID = require("jsonwebtoken").decode(req.body.token)._id;
-      } catch (e) {}
-
-      const newPosts = posts.map(post => {
-        const newPost = { ...post._doc };
-        if (userID != null) {
-          const voter = newPost.voters.find(voter => {
-            return voter._id == userID;
+      User.findOne({ _id: userID }, (err2, user) => {
+        if (err1) res.send({ success: false, payload: err.toString() });
+        else {
+          const newPosts = posts.map(post => {
+            const newPost = forumHelper.handlePost3(post._doc, user);
+            return newPost;
           });
-          //console.log("voter: " + voter);
-          newPost.currentUserVote = null;
-          if (voter != undefined) newPost.currentUserVote = voter.voteType;
-        } else {
-          //use hasn't logged - in, return empty currentUserVote
-          newPost.currentUserVote = null;
+          res.send({ success: true, payload: newPosts });
         }
-        delete newPost.voters;
-        return newPost;
       });
+    } else res.send({ success: false, payload: err2 });
 
-      res.status(200).send(newPosts);
-    } else res.status(500).send(err);
+    //   console.log('newPosts')
+    //   console.log(newPosts);
+    //   res.status(200).send(newPosts);
+    // } else res.status(500).send(err);
   });
+
+  // Post.find({ topic: req.params.topic }, (err, posts) => {
+  //   if (posts) {
+  //     console.log("inside fetchPosts");
+  //     //handle posta data
+  //     //return if user voted the post
+  //     //do not send voters array to client - sensitive data
+
+  //     //if user not logged-in, token is empty, than dont return currentUserVote
+  //     let userID = null;
+
+  //     try {
+  //       userID = require("jsonwebtoken").decode(req.body.token)._id;
+  //     } catch (e) {}
+
+  //     const newPosts = posts.map(post => {
+  //       const newPost = { ...post._doc };
+  //       if (userID != null) {
+  //         const voter = newPost.voters.find(voter => {
+  //           return voter._id == userID;
+  //         });
+  //         //console.log("voter: " + voter);
+  //         newPost.currentUserVote = null;
+  //         if (voter != undefined) newPost.currentUserVote = voter.voteType;
+  //       } else {
+  //         //use hasn't logged - in, return empty currentUserVote
+  //         newPost.currentUserVote = null;
+  //       }
+  //       delete newPost.voters;
+  //       return newPost;
+  //     });
+
+  //     res.status(200).send(newPosts);
+  //   } else res.status(500).send(err);
+  // });
 });
 
 router.use("/votePost", jwtAuth);
 router.post("/votePost", (req, res, next) => {
   const { token, postID, voteType } = req.body;
   const userID = require("jsonwebtoken").decode(token)._id;
-  // console.log('userID: ' + require('jsonwebtoken').decode(token)._id);
-  // console.log('postID:' + postID);
-  // console.log('voteType: ' + voteType);
 
   const newVoter = {
     _id: userID,
@@ -226,6 +337,111 @@ router.post("/votePost", (req, res, next) => {
       }
     } else res.status(500).send("err4");
   });
+});
+
+router.use("/voteComment", jwtAuth);
+router.post("/voteComment/", (req, res, next) => {
+  const { commentID, token, voteType } = req.body;
+  const userID = require("jsonwebtoken").decode(token)._id;
+
+  const newVoter = {
+    _id: userID,
+    voteType: voteType
+  };
+
+  let voteInt = 0;
+  if (voteType == "up") voteInt = 1;
+  else voteInt = -1;
+
+  Comment.findOne({ _id: commentID }, (err, comment) => {
+    if (comment) {
+      const existingVote = comment.voters.find(voter => {
+        return voter._id == userID;
+      });
+      //if user already voted
+      if (existingVote) {
+        console.log("EXISTING VOTE");
+        //if old_user_vote == new_user_vote
+        //then user un-votes, remove user voter instance and undo his effect on post.vote integer
+        if (existingVote.voteType == voteType) {
+          Comment.findOneAndUpdate(
+            { _id: commentID },
+            {
+              $pull: { voters: { _id: userID } },
+              $inc: { votes: -1 * voteInt }
+            },
+            (err, doc) => {
+              if (!err) res.send({ success: true });
+              else res.status(500).send("cannot update (type: 1)");
+            }
+          );
+        }
+        //else, user votes a different vote,
+        //cancel his old vote and change his voter to current voteType
+        else {
+          console.log("DIFFERET VOTE");
+          Comment.findOneAndUpdate(
+            { _id: commentID, "voters._id": userID },
+            {
+              $set: { "voters.$.voteType": voteType },
+              $inc: { votes: 2 * voteInt }
+            },
+            (err, doc) => {
+              if (!err) res.send({ success: true });
+              else res.status(500).send("cannot update (type: 2)");
+            }
+          );
+        }
+      }
+      //else, a new vote
+      else {
+        Comment.findOneAndUpdate(
+          { _id: commentID },
+          { $push: { voters: newVoter }, $inc: { votes: voteInt } },
+          (err, doc) => {
+            if (!err) res.send({ success: true });
+            else res.status(500).send("cannot update (type: 3)");
+          }
+        );
+      }
+    } else res.status(500).send("cannot find comment to update.");
+  });
+});
+router.use("/save/:postID", jwtAuth);
+router.post("/save/:postID", (req, res, next) => {
+  const postID = req.params.postID;
+  const saveType = req.body.saveType;
+  console.log('saveType: ' + saveType)
+  const userID = require("jsonwebtoken").decode(req.body.token)._id;
+  console.log("inside savePosts, userID: " + userID);
+  console.log("inside savePosts, postID: " + postID);
+
+  let actionType = '$push';
+  saveType == 'save' ? actionType = '$push' : actionType = '$pull'
+
+  User.findOneAndUpdate(
+    { _id: userID },
+    { [actionType]: { "forum.savedPosts": postID } },
+    (err, callback) => {
+      if (!err) res.send({ success: true });
+      else res.send({ success: false, payload: err });
+    }
+  );
+});
+
+router.use("/fetchSaved/:_id", jwtAuth);
+router.get("/fetchSaved/:_id", (req, res, next) => {
+  const userID = req.params._id;
+  User.findOne({ _id: userID })
+    .populate("forum.savedPosts")
+    .exec((err, user) => {
+      const savedPosts = user.forum.savedPosts;
+      const newSavedPosts = savedPosts.map(post => {
+        return forumHelper.handlePost2(post._doc, userID);
+      });
+      if (err) res.send({ success: false, payload: err.toString() });
+      else res.send({ success: true, payload: newSavedPosts });
+    });
 });
 
 module.exports = router;

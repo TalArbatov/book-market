@@ -26,7 +26,17 @@ const StyledTr = styled.tr`
     font-weight: 400;
   }
 `;
-
+const MainWindow = styled.div`
+  border-left: 5px solid #4c394e;
+  background: #fff;
+  width: 80vw;
+  min-width: 400px;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+`;
 const topics = [
   { title: "Announcments", address: "announcments" },
   { title: "Patch Notes", address: "patch-notes" },
@@ -43,19 +53,19 @@ const Wrapper = styled.div`
 
 
 
-class ViewTopic extends React.PureComponent {
+class ViewTopic extends React.Component {
    // topic = this.props.match.params.topic;
   componentDidMount() {
     this.props.fetchPostsByTopic(this.props.match.params.topic).then(res => {
-      if (res.success) {
-        console.log(res.payload)
-        this.setState({ posts: res.payload });
-      }
+      // if (res.success) {
+      //   console.log(res.payload)
+      //   this.setState({ posts: res.payload });
+      // }
     });
   }
 
   state = {
-    posts: [],
+ //   posts: [],
     currentPage: 1,
     postsPerPage: 5,
     pageViewScope: 3
@@ -73,7 +83,8 @@ class ViewTopic extends React.PureComponent {
 
   render() {
     //console.log(this.state);
-    const { currentPage, postsPerPage, posts, pageViewScope } = this.state;
+    const { currentPage, postsPerPage, pageViewScope } = this.state;
+    const posts = this.props.forumReducer.posts
     const lastPostIndex = currentPage * postsPerPage;
     const firstPostIndex = lastPostIndex - postsPerPage;
     const displayedPosts = posts.slice(firstPostIndex, lastPostIndex);
@@ -133,6 +144,7 @@ class ViewTopic extends React.PureComponent {
     pageNumbers.sort((a, b) => a - b);
 
     return (
+      <MainWindow>
       <Wrapper>
         <h2>{topic.title}</h2>
         <Header />
@@ -153,6 +165,7 @@ class ViewTopic extends React.PureComponent {
           </tbody>
         </Table>
       </Wrapper>
+      </MainWindow>
     );
   }
 }

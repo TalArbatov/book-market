@@ -14,6 +14,8 @@ body {
   padding: 0;
   font-family: Gisha;
   min-height:100vh;
+  background: #f0f0f0;
+  padding-bottom:40px;
   
 }
 .MuiOutlinedInput-input-32 {

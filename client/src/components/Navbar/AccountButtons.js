@@ -29,9 +29,7 @@ li {
   padding-left:10px;
   cursor:pointer;
 }
-li:first-child {
-  cursor:default !important;
-}
+
 li:not:(:first-child) {
   
 }
@@ -75,6 +73,7 @@ const AccountButtons = ({ user, authenticated, logout }) => {
     <Wrapper>
       <ul>
         {authenticated ? (
+          <Link to='/account'>
           <li>
             <ImgWrapper>
               <img src={PROFILE_IMG_PATH + user.profileImage.filename} />
@@ -83,8 +82,10 @@ const AccountButtons = ({ user, authenticated, logout }) => {
               {user.firstName} {user.lastName}
             </p>
           </li>
+          </Link>
         ) : (
           <li />
+         
         )}
 
         <li>
@@ -94,7 +95,7 @@ const AccountButtons = ({ user, authenticated, logout }) => {
           <Link to="/order-status">Order Status</Link>
         </li>
         <li>
-          <Link to="/account">My Account</Link>
+          <Link to="/messages">Messages</Link>
         </li>
         {authenticated ? (
           <li>

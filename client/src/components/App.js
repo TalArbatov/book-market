@@ -7,7 +7,6 @@ import Terms from './Auth/Terms';
 import Forum from './Forum/Forum'
 import Account from './Account/Account';
 const ContentWrap = styled.div`
-  background: #f0f0f0;
   min-height:100vh;
   display:flex;
   justify-content:center;

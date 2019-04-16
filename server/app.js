@@ -12,6 +12,8 @@ mongoose.connect(DB_ADDRESS, { useNewUrlParser: true }, err => {
 });
 require("./models/UserSchema");
 require("./models/PostSchema");
+ require("./models/CommentSchema");
+
 //CONFIG passport
 require("./passport");
 

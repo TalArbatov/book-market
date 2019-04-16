@@ -9,7 +9,7 @@ import * as ACTIONS from '../../actions/userActions';
 import ButtonWrapper from '../shared/ButtonWrapper';
 const defaultState = {
   form: {
-    email: "",
+    username: "",
     password: ""
   },
   error: "",
@@ -52,11 +52,11 @@ const Login = props => {
             <td>
               <TextField
                 required
-                label="Email"
+                label="Username"
                 margin="normal"
                 variant="outlined"
                 classes={{ root: classes.root }}
-                onChange={e => updateForm(e.target.value, "email")}
+                onChange={e => updateForm(e.target.value, "username")}
               />
             </td>
           </tr>

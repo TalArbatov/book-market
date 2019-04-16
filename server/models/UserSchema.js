@@ -6,11 +6,30 @@ const UserSchema = mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true },
   //image: {data: Buffer, contentType: String},
+  username: { type: String, required: true },
   profileImage: {
-    filename: {type: String, default: 'default.jpg'},
-    dateUploaded: {type: Date}
+    filename: { type: String, default: "default.jpg" },
+    dateUploaded: { type: Date }
   },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  dateJoined: Date,
+  forum: {
+    postsNum: Number,
+    commentsNum: Number,
+    submittedPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post"
+      }
+    ],
+    savedPosts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post"
+      }
+    ]
+    //rank [rookie, appreitence, average, advanced, mater, elite, ....]
+  }
   // orderHistory: [
   //   {
   //     books: [
