@@ -12,7 +12,10 @@ const PostActions = props => {
     <ButtonArrayWrapper>
       <ButtonWrapper>
         <button onClick={props.toggleCreateComment}>Reply</button>
-        <button>Save</button>
+        {props.isSavedPost ? (
+          <button onClick={() => props.toggleSavePost('unsave')}>Unsave</button>
+        ) : <button onClick={() => props.toggleSavePost('save')}>Save</button>}
+        
         <button>Share</button>
       </ButtonWrapper>
     </ButtonArrayWrapper>

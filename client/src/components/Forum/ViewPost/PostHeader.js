@@ -93,7 +93,11 @@ const PostHeader = props => {
           </Text>
         </SubWrapper>
       </Wrapper>
-      <PostActions toggleCreateComment={props.toggleCreateComment} />
+      <PostActions
+        toggleCreateComment={props.toggleCreateComment}
+        toggleSavePost={props.toggleSavePost}
+        isSavedPost={props.post.isSavedPost}
+      />
     </>
   );
 };

@@ -42,12 +42,19 @@ module.exports = {
           if (user) res.send({ success: false, error: "Username already exists" });
           else {
             const { firstName, lastName, username, email, password } = form;
+            
             const newUser = new User({
               firstName,
               lastName,
               username,
               email,
-              password
+              password,
+              forum: {
+                postsNum: 0,
+                commentsNum: 0,
+                submittedPosts: [],
+                savedPosts: [],
+              }
             });
             newUser.save((err, resUser) => {
             //sign JWT token

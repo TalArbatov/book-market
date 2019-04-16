@@ -57,6 +57,14 @@ class ViewPost extends React.PureComponent {
       // });
     });
   }
+  componentWillUnmount() {
+    this.props.resetPostData();
+  }
+
+  toggleSavePost = (saveType) => {
+    this.props.toggleSavePost(this.props.forumReducer.currentPost._id, saveType);
+  }
+
   toggleCreateComment = () => {
     if (this.props.userReducer.authenticated) {
       const toggleCreateComment = this.state.toggleCreateComment;
@@ -79,6 +87,7 @@ class ViewPost extends React.PureComponent {
             <PostHeader
               post={this.props.forumReducer.currentPost}
               toggleCreateComment={this.toggleCreateComment}
+              toggleSavePost={this.toggleSavePost}
             />
           </PostContent>
         </MainWindow>
@@ -99,7 +108,7 @@ class ViewPost extends React.PureComponent {
           isOpen={this.state.isLoginModalOpen}
           //onAfterOpen={this.afterOpenModal}
           onRequestClose={() => {
-            setState({ ...this.state, isLoginModalOpen: false });
+            this.setState({ ...this.state, isLoginModalOpen: false });
           }}
           style={customStyles}
           contentLabel="Example Modal"
@@ -128,7 +137,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchPost: _id => dispatch(ACTIONS.fetchPost(_id))
+    fetchPost: _id => dispatch(ACTIONS.fetchPost(_id)),
+    resetPostData: () => dispatch(ACTIONS.resetPostData()),
+    toggleSavePost: (postID, saveType) => dispatch(ACTIONS.toggleSavePost(postID, saveType)),
   };
 };
 

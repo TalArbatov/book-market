@@ -4,7 +4,7 @@ const defaultState = {
   posts: [],
   currentPost: {
     author: {
-      imagePath: '/default.jpg'
+      imagePath: "/default.jpg"
     }
   },
   isLoading: false,
@@ -22,6 +22,8 @@ const forumReducer = (state = defaultState, action) => {
     case TYPES.FETCH_POSTS_BY_TOPIC_REQUEST:
     case TYPES.FETCH_POST_REQUEST:
     case TYPES.FETCH_COMMENTS_REQUEST:
+    case TYPES.TOGGLE_SAVE_POST_REQUEST:
+    case TYPES.FETCH_SAVED_POSTS_REQUEST:
       return { ...state, isLoading: true };
     case TYPES.CREATE_COMMENT_ERROR:
     case TYPES.REMOVE_COMMENT_ERROR:
@@ -31,7 +33,21 @@ const forumReducer = (state = defaultState, action) => {
     case TYPES.FETCH_POSTS_BY_TOPIC_ERROR:
     case TYPES.FETCH_POST_ERROR:
     case TYPES.FETCH_COMMENTS_ERROR:
+    case TYPES.TOGGLE_SAVE_POST_ERROR:
+    case TYPES.FETCH_SAVED_POSTS_ERROR:
       return { ...state, isLoading: false };
+    case TYPES.FETCH_SAVED_POSTS_SUCCESS:
+      return { ...state, posts: action.payload };
+    case TYPES.TOGGLE_SAVE_POST_SUCCESS:
+      const postID2 = action.payload;
+      const newPosts2 = state.posts.map(post => {
+        if(post._id == postID2)
+          return {post, isSavedPost: !post.isSavedPost}
+        return post;
+      })
+      const currentPost2 = {...state.currentPost, isSavedPost: !state.currentPost.isSavedPost};
+
+      return {...state, posts: newPosts2, currentPost: currentPost2}
     case TYPES.CREATE_POST_SUCCESS:
       console.log(action.payload.topic);
       const newHeaders = {
@@ -54,7 +70,7 @@ const forumReducer = (state = defaultState, action) => {
       return { ...state, posts: action.payload };
     case TYPES.VOTE_POST_SUCCESS:
       //const userID = require("jsonwebtoken").decode(localStorage.token)._id;
-      const newCurrentPost = {...state.currentPost}
+      const newCurrentPost = { ...state.currentPost };
       console.log("action payload: "); //PostID, voteType
       console.log(action.payload);
       const { postID, voteType } = action.payload;
@@ -69,7 +85,7 @@ const forumReducer = (state = defaultState, action) => {
             post.votes += voteInt;
 
             newCurrentPost.currentUserVote = voteType;
-            newCurrentPost.votes += voteInt
+            newCurrentPost.votes += voteInt;
           }
           //if user HAS voted before, now he re-votes
           else {
@@ -80,8 +96,6 @@ const forumReducer = (state = defaultState, action) => {
               post.votes -= voteInt;
               newCurrentPost.currentUserVote = undefined;
               newCurrentPost.votes -= voteInt;
-
-
             }
             //user votes one thing, and then re-votes the other
             else {
@@ -91,7 +105,6 @@ const forumReducer = (state = defaultState, action) => {
 
               newCurrentPost.currentUserVote = voteType;
               newCurrentPost.votes += voteInt * 2;
-
             }
           }
           return post;
@@ -102,7 +115,7 @@ const forumReducer = (state = defaultState, action) => {
       //const userID2 = require("jsonwebtoken").decode(localStorage.token)._id;
       //const { commentID, voteType } = action.payload;
       const commentID = action.commentID;
-      const voteType2 = action.voteType
+      const voteType2 = action.voteType;
       const voteInt2 = voteType2 == "up" ? 1 : -1;
       const newComments = state.currentComments.map(comment => {
         if (comment._id == commentID) {
@@ -116,13 +129,17 @@ const forumReducer = (state = defaultState, action) => {
           else {
             //if user votes same twice, cancel his vote
             if (comment.currentUserVote == voteType2) {
-              console.log("user already voted on comment, votes the same again");
+              console.log(
+                "user already voted on comment, votes the same again"
+              );
               comment.currentUserVote = undefined;
               comment.votes -= voteInt2;
             }
             //user votes one thing, and then re-votes the other
             else {
-              console.log("user already voted on comment, votes the opposite now");
+              console.log(
+                "user already voted on comment, votes the opposite now"
+              );
               comment.currentUserVote = voteType2;
               comment.votes += voteInt2 * 2;
             }
@@ -134,9 +151,18 @@ const forumReducer = (state = defaultState, action) => {
     case TYPES.FETCH_COMMENTS_SUCCESS:
       return { ...state, currentComments: action.payload };
     case TYPES.ADD_COMMENT_SUCCESS:
-      return {...state, currentComments: [action.payload, ...state.currentComments]}
+      return {
+        ...state,
+        currentComments: [action.payload, ...state.currentComments]
+      };
     default:
       return state;
+    case TYPES.RESET_POST_DATA:
+      return {
+        ...state,
+        currentComments: defaultState.currentComments,
+        currentPost: defaultState.currentPost
+      };
   }
 };
 

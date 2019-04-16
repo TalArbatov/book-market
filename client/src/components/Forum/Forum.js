@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Switch, Route, Link } from "react-router-dom";
-import ViewPosts from "./ViewPosts/ViewPosts";
+import ViewForum from "./ViewForum/ViewForum";
 import CreatePost from "./CreatePost";
 import { connect } from "react-redux";
 import * as ACTIONS from "../../actions/forumActions";
@@ -26,10 +26,12 @@ class Forum extends React.PureComponent {
         <Switch>
           {/* <Route exact path="/forum/view" component={ViewPosts} /> */}
 
-          <Route exact path="/forum" component={ViewPosts} />
+          <Route exact path="/forum" component={ViewForum} />
           <Route exact path="/forum/new" component={CreatePost} />
           <Route exact path="/forum/view/:topic" component={ViewTopic} />
           <Route path="/forum/view/:topic/:_id" component={ViewPost} />
+          <Route path="/forum/view/saved" component={ViewPost} />
+
         </Switch>
         <br />
         <br />

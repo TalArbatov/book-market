@@ -81,9 +81,16 @@ export const fetchPostsByTopic = topic => {
     return axios
       .post("/api/forum/fetchPostsByTopic/" + topic, { token })
       .then(res => {
-        console.log(res);
-        dispatch(fetchPostsByTopicSuccess(res.data));
-        return { success: true, payload: res.data };
+        if(res.data.success) {
+        //console.log(res);
+        dispatch(fetchPostsByTopicSuccess(res.data.payload));
+        return { success: true, payload: res.data.payload };
+        }
+        else {
+          dispatch(fetchPostsByTopicError());
+          return {success: false, payload: res.data.payload}
+        }
+
       })
       .catch(e => {
         dispatch(fetchPostsByTopicError());
@@ -115,6 +122,7 @@ export const fetchPost = _id => {
     return axios
       .post("/api/forum/view/post/" + _id, {token: localStorage.token})
       .then(res => {
+        console.log('post fetched: ')
         console.log(res.data);
         dispatch(fetchPostSuccess(res.data.payload));
         dispatch(fetchComments(_id))
@@ -308,5 +316,84 @@ export const fetchCommentsError = () => {
 export const fetchCommentsRequest = () => {
   return {
     type: TYPES.FETCH_COMMENTS_REQUEST
+  }
+}
+
+export const resetPostData = () => {
+  return {
+    type:TYPES.RESET_POST_DATA
+  }
+}
+
+export const toggleSavePost = (postID, saveType) => {
+  return dispatch => {
+    dispatch(toggleSavePostRequest());
+    console.log('saveType: ' + saveType)
+    return axios.post('/api/forum/save/' + postID, {token: localStorage.token, saveType: saveType})
+    .then(res => {
+      if(res.data.success) {
+        dispatch(toggleSavePostSuccess(postID));
+        console.log(res.data);
+        return {success: true}
+      }
+      else {
+        dispatch(toggleSavePostError());
+        console.log(res.data);
+        return {success: false}
+      }
+    })
+  }
+}
+
+export const toggleSavePostRequest = () => {
+  return {
+    type: TYPES.TOGGLE_SAVE_POST_REQUEST
+  }
+}
+export const toggleSavePostError = () => {
+  return {
+    type: TYPES.TOGGLE_SAVE_POST_ERROR
+  }
+}
+export const toggleSavePostSuccess = (postID) => {
+  return {
+    type: TYPES.TOGGLE_SAVE_POST_SUCCESS,
+    payload: postID
+  }
+}
+
+export const fetchSavedPosts = () => {
+  const userID = require('jsonwebtoken').decode(localStorage.token)._id;
+  return dispatch => {
+    dispatch(fetchSavedPostsRequest());
+    axios.get('/api/forum/fetchSaved/' + userID).then(res => {
+      console.log(res.data);
+      if(res.data.success) {
+        const savedPosts = res.data.payload
+        dispatch(fetchSavedPostsSuccess(savedPosts));
+        return {success: true}
+      }
+      else {
+        dispatch(fetchSavedPostsError());
+        return {success: false}
+      }
+    })
+  }
+}
+
+export const fetchSavedPostsRequest = () => {
+  return {
+    type: TYPES.FETCH_SAVED_POSTS_REQUEST
+  }
+}
+export const fetchSavedPostsSuccess = (savedPosts) => {
+  return {
+    type: TYPES.FETCH_SAVED_POSTS_SUCCESS,
+    payload: savedPosts
+  }
+}
+export const fetchSavedPostsError = () => {
+  return {
+    type: TYPES.FETCH_SAVED_POSTS_ERROR
   }
 }

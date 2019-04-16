@@ -58,6 +58,7 @@ const CreateComment = props => {
         email: user.email,
       },
       content: getState,
+      postID: props.postID,
       date: Date.now()
     };
 

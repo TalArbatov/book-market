@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom'
-
+import {connect} from 'react-redux'
+import * as ACTIONS from '../../../actions/forumActions'
 const Wrapper = styled.div`
 background :#7f5c82;
 height:100%;
@@ -25,13 +26,35 @@ const ButtonWrapper = styled.div `
 `
 
 const HeaderButton = props => {
+
+  const fetchSavedPosts = () => {
+    props.fetchSavedPosts();
+  }
+
   return(
       <Wrapper>
         <ButtonWrapper><p>All Posts</p></ButtonWrapper>
         <ButtonWrapper><p>Latest Activity</p></ButtonWrapper>
         <ButtonWrapper><p>My Subscriptions</p></ButtonWrapper>
+        <ButtonWrapper><p onClick={fetchSavedPosts}>Saved</p></ButtonWrapper>
+
       </Wrapper>
   )
 }
 
-export default HeaderButton;
+const mapStateToProps = state => {
+  return {
+    forumReducer: state.forumReducer
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchSavedPosts: () => dispatch(ACTIONS.fetchSavedPosts())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HeaderButton);
