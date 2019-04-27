@@ -1,6 +1,7 @@
 import React from "react";
 import TopicGroupList from "./TopicGroupList";
 import styled from "styled-components";
+import Header from "./Header";
 const state = {
   topicGroups: [
     {
@@ -9,11 +10,11 @@ const state = {
         {
           title: "Announcments",
           subtitle: "just about everytthing",
-          address: 'announcments'
+          address: "announcments"
         },
         {
           title: "Patch Notes",
-          address: 'patch-notes',
+          address: "patch-notes"
         }
       ]
     },
@@ -22,15 +23,15 @@ const state = {
       topics: [
         {
           title: "Random",
-          address: 'random'
+          address: "random"
         },
         {
           title: "New Stores",
-          address: 'new-stores',
+          address: "new-stores"
         },
         {
           title: "Updating users",
-          address: 'updating-users',
+          address: "updating-users"
         }
       ]
     },
@@ -39,11 +40,11 @@ const state = {
       topics: [
         {
           title: "Networking",
-          address: 'networking',
+          address: "networking"
         },
         {
           title: "Hardware",
-          address: 'hardware',
+          address: "hardware"
         }
       ]
     }
@@ -65,8 +66,8 @@ const StyledTr = styled.tr`
   }
   p {
     margin: 8px 0;
-    letter-spacing:1px;
-    font-weight:400;
+    letter-spacing: 1px;
+    font-weight: 400;
   }
 `;
 const MainWindow = styled.div`
@@ -82,25 +83,27 @@ const MainWindow = styled.div`
 `;
 const ViewForum = props => {
   return (
+    <>
+    <Header />
     <MainWindow>
-    <Table>
-      <tbody>
-        <StyledTr>
-          <td>
-            <p>Forum</p>
-          </td>
-          <td>
-            <p>Posts</p>
-          </td>
-          <td>
-            <p>Comments</p>
-          </td>
-         
-        </StyledTr>
-        <TopicGroupList topicGroups={state.topicGroups} />
-      </tbody>
-    </Table>
+      <Table>
+        <tbody>
+          <StyledTr>
+            <td>
+              <p>Forum</p>
+            </td>
+            <td>
+              <p>Posts</p>
+            </td>
+            <td>
+              <p>Comments</p>
+            </td>
+          </StyledTr>
+          <TopicGroupList topicGroups={state.topicGroups} />
+        </tbody>
+      </Table>
     </MainWindow>
+    </>
   );
 };
 

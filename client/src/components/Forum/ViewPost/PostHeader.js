@@ -4,6 +4,7 @@ import PostActions from "./PostActions";
 import VotePost from "../ViewTopic/VotePost";
 import config from "../../../config";
 import formatDate from "../../../utils/formatDate";
+import PostBadges from './PostBadges/index';
 const ImgWrapper = styled.div`
   position: relative;
   width: 100px;
@@ -22,6 +23,7 @@ const Title = styled.p`
   font-size: 1.3em;
   display: inline-block;
   margin: 0;
+  padding-top:12px;
 `;
 
 const SubWrapper = styled.div`
@@ -32,6 +34,7 @@ const SubWrapper = styled.div`
 `;
 const Text = styled.div`
   margin-left: 30px;
+  width:100%;
 `;
 const Information = styled.p`
   color: grey;
@@ -53,6 +56,12 @@ const AccountWrapper = styled.div`
   flex-direction: row;
   align-items: center;
 `;
+const TitleWrapper = styled.div`
+  display:flex;
+  flex-direction:row;
+  width:100%;
+  justify-content:space-between;
+`
 const PostHeader = props => {
   const {
     _id,
@@ -87,7 +96,10 @@ const PostHeader = props => {
             </BadgeWrapper>
           </AccountWrapper>
           <Text>
-            <Title>{title}</Title>
+            <TitleWrapper>
+              <Title>{title}</Title>
+              <PostBadges post={props.post}/>
+            </TitleWrapper>
             {/* <p style={{ color: "grey" }}>{formatDate(date)}</p> */}
             <Content>{content}</Content>
           </Text>

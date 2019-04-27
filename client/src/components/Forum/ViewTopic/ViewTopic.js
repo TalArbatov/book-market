@@ -6,6 +6,20 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Header from "./Header";
 import Filter from "./Flilter";
+import Modal from "react-modal";
+import Login from "../../Auth/Login";
+
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)"
+  }
+};
+
 const Table = styled.table`
   width: 100%;
   background: blue;
@@ -51,10 +65,8 @@ const Wrapper = styled.div`
   width: 80%;
 `;
 
-
-
 class ViewTopic extends React.Component {
-   // topic = this.props.match.params.topic;
+  // topic = this.props.match.params.topic;
   componentDidMount() {
     this.props.fetchPostsByTopic(this.props.match.params.topic).then(res => {
       // if (res.success) {
@@ -63,17 +75,30 @@ class ViewTopic extends React.Component {
       // }
     });
   }
+   fetchSavedPosts = () => {
+    this.props.fetchSavedPosts().then(res => {
+      console.log(res)
+      if(!res.success)
+        this.openLoginModal();
+    });
+  }
 
+  fetchTopicPosts = () => {
+    this.props.fetchPostsByTopic(this.props.match.params.topic).then(res => {});
+  }
   state = {
- //   posts: [],
+    //   posts: [],
     currentPage: 1,
     postsPerPage: 5,
-    pageViewScope: 3
+    pageViewScope: 3,
+    showLoginModal: false
   };
   //this equals to pageNumbersInt
 
   changePage = num => {
-    const lastPage = Math.ceil(this.state.posts.length / this.state.postsPerPage);
+    const lastPage = Math.ceil(
+      this.props.forumReducer.posts.length / this.state.postsPerPage
+    );
     //console.log("num: " + num);
     //console.log("this.lastPage: " + lastPage);
     if (num < 1) num = 1;
@@ -81,10 +106,17 @@ class ViewTopic extends React.Component {
     this.setState({ currentPage: Number(num) });
   };
 
+  openLoginModal = () => {
+    this.setState({ showLoginModal: true });
+  };
+
+  closeLoginModal = () => {
+    this.setState({ showLoginModal: true });
+  };
   render() {
     //console.log(this.state);
     const { currentPage, postsPerPage, pageViewScope } = this.state;
-    const posts = this.props.forumReducer.posts
+    const posts = this.props.forumReducer.posts;
     const lastPostIndex = currentPage * postsPerPage;
     const firstPostIndex = lastPostIndex - postsPerPage;
     const displayedPosts = posts.slice(firstPostIndex, lastPostIndex);
@@ -144,28 +176,56 @@ class ViewTopic extends React.Component {
     pageNumbers.sort((a, b) => a - b);
 
     return (
-      <MainWindow>
-      <Wrapper>
-        <h2>{topic.title}</h2>
-        <Header />
-        <Filter
-          currentPage={currentPage}
-          pageNumbers={pageNumbers}
-          changePage={this.changePage}
-          lastPage={pageNumbersInt}
-        />
+      <>
+        <MainWindow>
+          <Wrapper>
+            <h2>{topic.title}</h2>
+            <Header
+              openLoginModal={this.openLoginModal}
+              fetchSavedPosts={this.fetchSavedPosts}
+              fetchTopicPosts={this.fetchTopicPosts}
+            />
+            <Filter
+              currentPage={currentPage}
+              pageNumbers={pageNumbers}
+              changePage={this.changePage}
+              lastPage={pageNumbersInt}
+            />
 
-        <Table>
-          <tbody>
-            <StyledTr>
-              <td />
-            </StyledTr>
-            {/* <h1>View Topic {this.props.match.params.topic}</h1> */}
-            <PostPreviewList posts={displayedPosts} topic={this.props.match.params.topic}/>
-          </tbody>
-        </Table>
-      </Wrapper>
-      </MainWindow>
+            <Table>
+              <tbody>
+                <StyledTr>
+                  <td />
+                </StyledTr>
+                {/* <h1>View Topic {this.props.match.params.topic}</h1> */}
+                <PostPreviewList
+                  posts={displayedPosts}
+                  topic={this.props.match.params.topic}
+                />
+              </tbody>
+            </Table>
+          </Wrapper>
+        </MainWindow>
+        <Modal
+          isOpen={this.state.showLoginModal}
+          //onAfterOpen={this.afterOpenModal}
+          onRequestClose={() => {
+            this.setState({ ...this.state, showLoginModal: false });
+          }}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <p>Please log-in to vote on posts.</p>
+          <Login />
+          {/* <button
+          onClick={() => {
+            setState({ ...getState, isOpen: false });
+          }}
+        >
+          Close
+        </button> */}
+        </Modal>
+      </>
     );
   }
 }
@@ -177,7 +237,9 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    fetchPostsByTopic: topic => dispatch(ACTIONS.fetchPostsByTopic(topic))
+    fetchPostsByTopic: topic => dispatch(ACTIONS.fetchPostsByTopic(topic)),
+    fetchSavedPosts: () => dispatch(ACTIONS.fetchSavedPosts())
+
   };
 };
 export default connect(

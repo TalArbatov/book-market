@@ -22,21 +22,18 @@ const ButtonWrapper = styled.div `
   ${ButtonWrapper}:hover {
   background:#4c394e;
   transition:0.5s;
+  cursor:pointer;
 }
 `
 
 const HeaderButton = props => {
 
-  const fetchSavedPosts = () => {
-    props.fetchSavedPosts();
-  }
-
   return(
       <Wrapper>
-        <ButtonWrapper><p>All Posts</p></ButtonWrapper>
+        <ButtonWrapper onClick={props.fetchTopicPosts}><p>All Posts</p></ButtonWrapper>
         <ButtonWrapper><p>Latest Activity</p></ButtonWrapper>
         <ButtonWrapper><p>My Subscriptions</p></ButtonWrapper>
-        <ButtonWrapper><p onClick={fetchSavedPosts}>Saved</p></ButtonWrapper>
+        <ButtonWrapper onClick={props.fetchSavedPosts}><p >Saved</p></ButtonWrapper>
 
       </Wrapper>
   )

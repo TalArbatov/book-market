@@ -9,6 +9,7 @@ import PostHeader from "./PostHeader";
 import config from "../../../config";
 import Modal from "react-modal";
 import Login from "../../Auth/Login";
+import PopWindow from './PopWindow';
 
 const PostContent = styled.div`
   height: 100%;
@@ -62,7 +63,11 @@ class ViewPost extends React.PureComponent {
   }
 
   toggleSavePost = (saveType) => {
-    this.props.toggleSavePost(this.props.forumReducer.currentPost._id, saveType);
+    this.props.toggleSavePost(this.props.forumReducer.currentPost._id, saveType).then(res => {
+      console.log(res);
+      if(!res.success)
+        this.setState({isLoginModalOpen: true})
+    })
   }
 
   toggleCreateComment = () => {
@@ -90,6 +95,7 @@ class ViewPost extends React.PureComponent {
               toggleSavePost={this.toggleSavePost}
             />
           </PostContent>
+        
         </MainWindow>
         <div
           style={{ display: this.state.toggleCreateComment ? "block" : "none" }}

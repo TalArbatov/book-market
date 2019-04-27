@@ -66,7 +66,7 @@ const PostPreview = ({ post, topic }) => {
             </Link>
             </PostHeader>
             <PostFooter>
-              <p>Created by <Link to='/fuck'>{post.authorHeader}</Link>, {dateString}</p>
+              <p>Created by {post.author.username} <Link to='/fuck'>{post.authorHeader}</Link>, {dateString}</p>
             </PostFooter>
           </PostContents>
         </PostWrapper>
