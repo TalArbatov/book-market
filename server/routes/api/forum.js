@@ -5,6 +5,8 @@ const passport = require("passport");
 const User = require("mongoose").model("User");
 const jwtAuth = passport.authenticate("jwt", { session: false });
 const forumHelper = require("../../helpers/forumHelper");
+
+
 router.get("/view/post/", (req, res, next) => {
   Post.find({}, (err, posts) => {
     if (posts) {
@@ -25,38 +27,33 @@ router.post("/view/post/:id", async (req, res, next) => {
   } catch (e) {}
   console.log(req.body);
   console.log("inside fetchPost: userID: " + userID);
-  // Post.findOne({ _id: req.params.id }, (err, post) => {
-  //   if (err) res.send({ success: false, payload: err });
-  //   else {
-  //     let newPost = {...post._doc, currentUserVote: null}
-  //     if (userID != null) {
-  //       const userVote = post.voters.find(voter => {
-  //         return voter._id == userID;
-  //       });
-  //       if(userVote != null && userVote != undefined)
-  //         newPost.currentUserVote = userVote.voteType
-  //     }
-  //     delete newPost.voters;
-  //     res.send({success: true, payload: newPost});
-  //   }
-  // });
-  const postID = req.params.id;
-  Post.findOne({ _id: postID }, (err1, post) => {
-    if (err1) res.send({ success: false, payload: err1 });
-    else {
-      User.findOne({ _id: userID }, (err2, user) => {
-        if (err2) res.send({ success: true, payload: err2 });
-        else {
-          const newPost = forumHelper.handlePost3(post._doc, user);
-          res.send({ success: true, payload: newPost });
-        }
-      });
-      //console.log(post._doc);
-    }
-  });
-  //const post =await forumHelper.handlePost2(postID, userID);
-  //console.log(post)
-  //res.send({success: true, payload: post})
+
+  if (userID) {
+    //if user logged in
+    const postID = req.params.id;
+    Post.findOne({ _id: postID }, (err1, post) => {
+      if (err1) res.send({ success: false, payload: err1 });
+      else {
+        User.findOne({ _id: userID }, (err2, user) => {
+          if (err2) res.send({ success: true, payload: err2 });
+          else {
+            const newPost = forumHelper.handlePostLoggedIn(post._doc, user);
+            res.send({ success: true, payload: newPost });
+          }
+        });
+      }
+    });
+  } else {
+    //user logged out
+    const postID = req.params.id;
+    Post.findOne({ _id: postID }, (err1, post) => {
+      if (err1) res.send({ success: false, payload: err1 });
+      else {
+        const newPost = forumHelper.handlePostLoggedOut(post._doc);
+        res.send({ success: true, payload: newPost });
+      }
+    });
+  }
 });
 
 router.post("/comments/:postID", (req, res, next) => {
@@ -152,6 +149,7 @@ router.route("/").post(jwtAuth, (req, res, next) => {
         content,
         topic: topic,
         votes: 0,
+        voters: [],
         author: author,
         date
       });
@@ -229,14 +227,10 @@ router.post("/fetchPostsByTopic/:topic", (req, res, next) => {
         User.findOne({ _id: userID }, (err2, user) => {
           if (err1) res.send({ success: false, payload: err.toString() });
           else {
-            // const newPosts = posts.map(post => {
-            //   const newPost = forumHelper.handlePost3(post._doc, user);
-            //   return newPost;
-            // });
-            // const existingPosts = newPosts.filter(post => {
-            //   return post != null;
-            // });
-            const existingPosts = forumHelper.handlePostArrayLoggedIn(posts, user)
+            const existingPosts = forumHelper.handlePostArrayLoggedIn(
+              posts,
+              user
+            );
             res.send({ success: true, payload: existingPosts });
           }
         });
@@ -445,15 +439,23 @@ router.get("/fetchSaved/:_id", (req, res, next) => {
   User.findOne({ _id: userID })
     .populate("forum.savedPosts.post")
     .exec((err, user) => {
-      const savedPosts = user.forum.savedPosts;
-      const newSavedPosts = savedPosts.map(savedPost => {
-        return forumHelper.handlePost3(savedPost.post._doc, user);
-      });
-      const existingSavedPosts = newSavedPosts.filter(post => {
-        return post != null;
-      });
+      //const savedPosts = user.forum.savedPosts;
+      // const newSavedPosts = savedPosts.map(savedPost => {
+      //   return forumHelper.handlePost3(savedPost.post._doc, user);
+      // });
+      // const existingSavedPosts = newSavedPosts.filter(post => {
+      //   return post != null;
+      // });
+      // console.log('uSER')
+      // console.log(user);
+      // console.log('savedPosts');
+      // console.log(user.forum.savedPosts)
+      const savedPosts = user.forum.savedPosts.map(postWrapper => {
+        return postWrapper.post;
+      })
+      const toReturn = forumHelper.handlePostArrayLoggedIn(savedPosts, user);
       if (err) res.send({ success: false, payload: err.toString() });
-      else res.send({ success: true, payload: existingSavedPosts });
+      else res.send({ success: true, payload: toReturn });
     });
 });
 

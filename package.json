@@ -4,7 +4,7 @@
   "description": "A simple application using React/Redux/Express/MongoDB",
   "main": "index.js",
   "scripts": {
-    "start:db": "mongod --dbpath=\"C:/Users/Tal Arbatov/mongo-data\"",
+    "start:db": "mongod --dbpath=\"C:/Users/Tal/mongo-data\"",
     "start:server": "nodemon server/app",
     "start:client": "webpack --watch",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\" "
