@@ -15,7 +15,6 @@ const defaultState = {
 const forumReducer = (state = defaultState, action) => {
   switch (action.type) {
     case TYPES.CREATE_POST_REQUEST:
-    case TYPES.REMOVE_POST_REQUEST:
     case TYPES.CREATE_COMMENT_REQUEST:
     case TYPES.REMOVE_COMMENT_REQUEST:
     case TYPES.FETCH_FORUM_HEADRS_REQUEST:
@@ -24,32 +23,37 @@ const forumReducer = (state = defaultState, action) => {
     case TYPES.FETCH_COMMENTS_REQUEST:
     case TYPES.TOGGLE_SAVE_POST_REQUEST:
     case TYPES.FETCH_SAVED_POSTS_REQUEST:
+    case TYPES.DELETE_POST_REQUEST:
       return { ...state, isLoading: true };
     case TYPES.CREATE_COMMENT_ERROR:
     case TYPES.REMOVE_COMMENT_ERROR:
     case TYPES.CREATE_POST_ERROR:
-    case TYPES.REMOVE_POST_ERROR:
     case TYPES.FETCH_FORUM_HEADRS_ERROR:
     case TYPES.FETCH_POSTS_BY_TOPIC_ERROR:
     case TYPES.FETCH_POST_ERROR:
     case TYPES.FETCH_COMMENTS_ERROR:
     case TYPES.TOGGLE_SAVE_POST_ERROR:
     case TYPES.FETCH_SAVED_POSTS_ERROR:
+    case TYPES.DELETE_POST_ERROR:
       return { ...state, isLoading: false };
+    case TYPES.DELETE_POST_SUCCESS:
+      const newPosts3 = state.posts.filter(post => {
+        return post._id != postID;
+      })
+      return {...state, posts: newPosts3}
     case TYPES.FETCH_SAVED_POSTS_SUCCESS:
       return { ...state, posts: action.payload };
     case TYPES.TOGGLE_SAVE_POST_SUCCESS:
       const postID2 = action.payload;
       const newPosts2 = state.posts.map(post => {
         if(post._id == postID2)
-          return {post, isSavedPost: !post.isSavedPost}
+          return {...post, isSavedPost: !post.isSavedPost}
         return post;
       })
       const currentPost2 = {...state.currentPost, isSavedPost: !state.currentPost.isSavedPost};
 
       return {...state, posts: newPosts2, currentPost: currentPost2}
     case TYPES.CREATE_POST_SUCCESS:
-      console.log(action.payload.topic);
       const newHeaders = {
         ...state.headers,
         [action.payload.topic]: {
@@ -71,8 +75,6 @@ const forumReducer = (state = defaultState, action) => {
     case TYPES.VOTE_POST_SUCCESS:
       //const userID = require("jsonwebtoken").decode(localStorage.token)._id;
       const newCurrentPost = { ...state.currentPost };
-      console.log("action payload: "); //PostID, voteType
-      console.log(action.payload);
       const { postID, voteType } = action.payload;
 
       const voteInt = voteType == "up" ? 1 : -1;
@@ -80,7 +82,6 @@ const forumReducer = (state = defaultState, action) => {
         if (post._id == postID) {
           //if user hasnt voted before, count his vote
           if (post.currentUserVote == undefined) {
-            console.log("user hasnt voted");
             post.currentUserVote = voteType;
             post.votes += voteInt;
 
@@ -160,10 +161,12 @@ const forumReducer = (state = defaultState, action) => {
     case TYPES.RESET_POST_DATA:
       return {
         ...state,
+        isLoading: false,
         currentComments: defaultState.currentComments,
         currentPost: defaultState.currentPost
       };
   }
 };
+
 
 export default forumReducer;

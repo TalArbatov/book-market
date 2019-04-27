@@ -6,6 +6,7 @@ const PostSchema = mongoose.Schema({
   content: String,
   date: Date,
   votes: Number,
+  isDeleted: {type:Boolean, default: false},
   voters: [
     {
       _id: String,

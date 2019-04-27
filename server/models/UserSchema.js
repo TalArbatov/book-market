@@ -24,8 +24,11 @@ const UserSchema = mongoose.Schema({
     ],
     savedPosts: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post"
+        dateSaved: Date,
+         post: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Post"
+         }
       }
     ]
     //rank [rookie, appreitence, average, advanced, mater, elite, ....]

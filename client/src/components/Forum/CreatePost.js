@@ -11,8 +11,10 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import * as ACTIONS from '../../actions/forumActions';
-import {withRouter} from 'react-router-dom'
+import * as ACTIONS from "../../actions/forumActions";
+import { withRouter } from "react-router-dom";
+import ButtonWrapper from "../shared/ButtonWrapper";
+import { Button } from "@material-ui/core";
 
 const Wrapper = styled.div`
   width: 60%;
@@ -24,9 +26,9 @@ const Wrapper = styled.div`
     width: 100%;
   }
   form {
-    width:100%;
-    display:flex;
-    flex-direction:column;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
   }
 `;
 const MainWindow = styled.div`
@@ -41,7 +43,7 @@ const MainWindow = styled.div`
   flex-wrap: wrap;
 `;
 const SubWrapper = styled.div`
-width:60%;
+  width: 60%;
   margin: 25px 0;
   margin-top: 25px;
 `;
@@ -57,25 +59,12 @@ const defaultState = {
   form: {
     title: "",
     content: "",
-    topic: "announcments"
+    topic: "announcments",
+    tags: [],
+    tagInput: '',
   },
-  error: ''
+  error: ""
 };
-
-const ButtonWrapper = styled.div`
-  button {
-    padding: 8px 18px;
-    background: #815386;
-    border-radius: 4px;
-    color: #efefef;
-    cursor: pointer;
-    font-size: 0.95em;
-    font-weight: 100;
-  }
-  button:hover {
-    background: #4c394e;
-  }
-`;
 
 const CreatePost = props => {
   const { classes } = props;
@@ -83,95 +72,130 @@ const CreatePost = props => {
   const [getState, setState] = useState(defaultState);
 
   const updateForm = (input, type) => {
-    setState({ ...getState, form: {...getState.form , [type]: input} });
+    setState({ ...getState, form: { ...getState.form, [type]: input } });
   };
-  const submitForm = (e) => {
+  const submitForm = e => {
     e.preventDefault();
     console.log(getState);
     props.createPost(getState.form).then(res => {
-      console.log('res')
-      console.log(res)
-      if(!res.success) {
-        console.log('unauthorized2')
-        setState({...getState, error: res.error})      
+      console.log("res");
+      console.log(res);
+      if (!res.success) {
+        console.log("unauthorized2");
+        setState({ ...getState, error: res.error });
       }
       //else props.history.push('/forum')
     });
   };
+  const onTopicInputUpdate = e => {
+    const input = e.target.value;
+    const lastLetter = input[input.length - 1];
+    console.log(lastLetter);
+    setState({...getState, form: {...getState.form, tagInput: input}})
 
+    if (lastLetter == " ") {
+      console.log("adding tag.");
+      const newTag = input.slice(0, -1 );
+      setState({
+        ...getState,
+        form: { ...getState.form, tags: [...getState.form.tags, newTag], tagInput: '' }
+      });
+    }
+  };
   // const handleSelect = (input) => {
   //   setState({...getState, form: {...getState.form, topic: input}})
   // }
   return (
     <MainWindow>
-    <Wrapper>
-      <form onSubmit={submitForm}>
-        <div>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <TextField
-                    required
-                    label="Title"
-                    margin="normal"
-                    classes={{ root: classes.root }}
-                    variant="outlined"
-                    onChange={e => updateForm(e.target.value, "title")}
+      <Wrapper>
+        <form onSubmit={submitForm}>
+          <div>
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <TextField
+                      required
+                      label="Title"
+                      margin="normal"
+                      classes={{ root: classes.root }}
+                      variant="outlined"
+                      onChange={e => updateForm(e.target.value, "title")}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <TextField
+                      required
+                      label="Content"
+                      margin="normal"
+                      variant="outlined"
+                      classes={{ root: classes.root }}
+                      multiline={true}
+                      rows={15}
+                      onChange={e => updateForm(e.target.value, "content")}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ButtonWrapper>
+                      {getState.form.tags.map(tag => {
+                        return <button>{tag}</button>;
+                      })}
+                    </ButtonWrapper>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <TextField
+                      required
+                      value={getState.form.tagInput}
+                      label="Topic"
+                      margin="normal"
+                      classes={{ root: classes.root }}
+                      variant="outlined"
+                      onChange={e => onTopicInputUpdate(e)}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <SubWrapper>
+            <FormControl variant="outlined" className={classes.select}>
+              <InputLabel htmlFor="outlined-age-native-simple">
+                Topic
+              </InputLabel>
+              <Select
+                classes={{ root: classes.select }}
+                native
+                //value={this.state.age}
+                //onChange={this.handleChange('age')}
+                onChange={e => updateForm(e.target.value, "topic")}
+                input={
+                  <OutlinedInput
+                    name="age"
+                    labelWidth={10}
+                    id="outlined-age-native-simple"
                   />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <TextField
-                    required
-                    label="Content"
-                    margin="normal"
-                    variant="outlined"
-                    classes={{ root: classes.root }}
-                    multiline={true}
-                    rows={15}
-                    onChange={e => updateForm(e.target.value, "content")}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <SubWrapper>
-          <FormControl variant="outlined" className={classes.select}>
-            <InputLabel htmlFor="outlined-age-native-simple">Topic</InputLabel>
-            <Select
-              classes={{ root: classes.select }}
-              native
-              //value={this.state.age}
-              //onChange={this.handleChange('age')}
-              onChange={(e) => updateForm(e.target.value, 'topic')}
-              input={
-                <OutlinedInput
-                  name="age"
-                  labelWidth={10}
-                  id="outlined-age-native-simple"
-                />
-              }
-            >
-            
-              <option value={'announcments'}>Announcments</option>
-              <option value={'patch-notes'}>Patch Notes</option>
-              <option value={'random'}>Random</option>
-              <option value={'new-stores'}>New Stores</option>
-              <option value={'updating-users'}>Updating users</option>
-              
-
-            </Select>
-          </FormControl>
-        </SubWrapper>
-        <ButtonWrapper>
-          <button type="submit">Create Post</button>
-        </ButtonWrapper>
-      </form>
-      <p style={{color:'red'}}>{getState.error}</p>
-    </Wrapper>
+                }
+              >
+                <option value={"announcments"}>Announcments</option>
+                <option value={"patch-notes"}>Patch Notes</option>
+                <option value={"random"}>Random</option>
+                <option value={"new-stores"}>New Stores</option>
+                <option value={"updating-users"}>Updating users</option>
+              </Select>
+            </FormControl>
+          </SubWrapper>
+          <ButtonWrapper>
+            <button type="submit">Create Post</button>
+          </ButtonWrapper>
+        </form>
+        <p style={{ color: "red" }}>{getState.error}</p>
+      </Wrapper>
     </MainWindow>
   );
 };
@@ -188,7 +212,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(CreatePost)));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles)(CreatePost))
+);
