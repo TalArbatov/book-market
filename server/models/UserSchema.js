@@ -30,6 +30,19 @@ const UserSchema = mongoose.Schema({
           ref: "Post"
          }
       }
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      },
+    ],
+      followers: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User"
+        },
+      
     ]
     //rank [rookie, appreitence, average, advanced, mater, elite, ....]
   }

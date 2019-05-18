@@ -25,8 +25,6 @@ router.post("/view/post/:id", async (req, res, next) => {
   try {
     userID = require("jsonwebtoken").decode(req.body.token)._id;
   } catch (e) {}
-  console.log(req.body);
-  console.log("inside fetchPost: userID: " + userID);
 
   if (userID) {
     //if user logged in
@@ -62,7 +60,6 @@ router.post("/comments/:postID", (req, res, next) => {
   Comment.find({ postID: postID }, (err, comments) => {
     if (err) res.send({ success: false, payload: "cannot find comments" });
     else {
-      console.log("inside fetchComments");
       //handle comment data
       //return if user voted the post
       //do not send voters array to client - sensitive data
@@ -76,15 +73,12 @@ router.post("/comments/:postID", (req, res, next) => {
       const toFetch = comments.filter(comment => {
         return postID == comment.postID;
       });
-      console.log("toFetch comments: " + toFetch.length);
-      console.log("postID: " + postID);
       const newComments = toFetch.map(comment => {
         const newComment = { ...comment._doc };
         if (userID != null) {
           const voter = newComment.voters.find(voter => {
             return voter._id == userID;
           });
-          //console.log("voter: " + voter);
           newComment.currentUserVote = null;
           if (voter != undefined) newComment.currentUserVote = voter.voteType;
         } else {
@@ -123,7 +117,6 @@ router.route("/").post(jwtAuth, (req, res, next) => {
 
   //TOOD: validate
   //1. get author
-  console.log("started creating post...");
 
   // const firstName = require("jsonwebtoken").decode(req.body.token).firstName;
   // const lastName = require("jsonwebtoken").decode(req.body.token).lastName;
@@ -154,10 +147,9 @@ router.route("/").post(jwtAuth, (req, res, next) => {
         date
       });
       newPost.save((err, post) => {
-        console.log("err: " + err);
-        console.log(post);
+      
         if (err != null) {
-          console.log("error in newPost.save");
+        
 
           res.status(500).send(err);
         } else {
@@ -165,7 +157,7 @@ router.route("/").post(jwtAuth, (req, res, next) => {
             { _id: userID },
             { $push: { "forum.submittedPosts": post._id } },
             (err, doc) => {
-              console.log("success in newPost.save");
+           
               res.send({ success: true, payload: post });
             }
           );

@@ -4,7 +4,28 @@ import PostActions from "./PostActions";
 import VotePost from "../ViewTopic/VotePost";
 import config from "../../../config";
 import formatDate from "../../../utils/formatDate";
-import PostBadges from './PostBadges/index';
+import PostBadges from "./PostBadges/index";
+import HollowButtonWrapper from '../../shared/HollowButtonWrapper';
+import { followUser } from "../../../actions/forumActions";
+
+const Overlay = styled.div`
+  position:absolute;
+  background:black;
+  width: 100%;
+  height: 100%;
+  opacity:0;
+  z-index:0;
+  transition:0.4s;
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  align-items:center;
+  &:hover {
+    opacity:0.5;
+  }
+`
+
+
 const ImgWrapper = styled.div`
   position: relative;
   width: 100px;
@@ -23,7 +44,7 @@ const Title = styled.p`
   font-size: 1.3em;
   display: inline-block;
   margin: 0;
-  padding-top:12px;
+  padding-top: 12px;
 `;
 
 const SubWrapper = styled.div`
@@ -34,7 +55,7 @@ const SubWrapper = styled.div`
 `;
 const Text = styled.div`
   margin-left: 30px;
-  width:100%;
+  width: 100%;
 `;
 const Information = styled.p`
   color: grey;
@@ -57,11 +78,11 @@ const AccountWrapper = styled.div`
   align-items: center;
 `;
 const TitleWrapper = styled.div`
-  display:flex;
-  flex-direction:row;
-  width:100%;
-  justify-content:space-between;
-`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+`;
 const PostHeader = props => {
   const {
     _id,
@@ -74,7 +95,7 @@ const PostHeader = props => {
   } = props.post;
   const imagePath = config.PROFILE_IMG_PATH + props.post.author.imagePath;
 
-  console.log("imagePath" + imagePath);
+ 
   return (
     <>
       <Wrapper>
@@ -91,6 +112,13 @@ const PostHeader = props => {
             <BadgeWrapper>
               <ImgWrapper>
                 <img src={imagePath} />
+                <Overlay>
+                  <HollowButtonWrapper>
+                    <button onClick={() => props.followUser()}>
+                      Follow
+                    </button>
+                  </HollowButtonWrapper>
+                </Overlay>
               </ImgWrapper>
               <Information>{author.username}</Information>
             </BadgeWrapper>
@@ -98,7 +126,7 @@ const PostHeader = props => {
           <Text>
             <TitleWrapper>
               <Title>{title}</Title>
-              <PostBadges post={props.post}/>
+              <PostBadges post={props.post} />
             </TitleWrapper>
             {/* <p style={{ color: "grey" }}>{formatDate(date)}</p> */}
             <Content>{content}</Content>

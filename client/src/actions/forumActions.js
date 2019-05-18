@@ -441,3 +441,43 @@ export const deletePostError = () => {
     type: TYPES.DELETE_POST_ERROR
   }
 }
+
+export const followUserRequest = () => {
+  return {
+    type: TYPES.FOLLOW_USER_REQUEST
+  }
+}
+
+
+export const followUserSuccess = () => {
+  return {
+    type: TYPES.FOLLOW_USER_SUCCESS
+  }
+}
+
+
+export const followUserError = () => {
+  return {
+    type: TYPES.FOLLOW_USER_ERROR
+  }
+}
+
+export const followUser = (followedUserID, isFollow) => {
+  const followingUserID = require("jsonwebtoken").decode(localStorage.token)._id;
+  return dispatch => {
+    return axios.post('/api/account/follow', {followingUserID, followedUserID, isFollow}).then(res => {
+      console.log(res.data);
+      if(res.success) {
+        dispatch(followUserSuccess());
+        return {success: true}
+      }
+      else {
+        dispatch(followUserError());
+        return {success: false, err: 'General Error.'}
+      }
+    }).catch(err => {
+      dispatch(followUserSuccess());
+      return {success: false, err}
+    })
+  }
+}

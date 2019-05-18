@@ -50,18 +50,12 @@ const PopWindow = props => {
       </IconButton>
       <Popover
         open={getState.isPopoverOpen}
-        //anchorEl={this.anchorEl}
-        //anchorReference={anchorReference}
         anchorPosition={{ top: getState.mouseY, left: getState.mouseX }}
         onClose={closePopup}
         anchorOrigin={{
           vertical: getState.mouseY,
           horizontal: getState.mouseX
-        }}
-        // transformOrigin={{
-        //   vertical: transformOriginVertical,
-        //   horizontal: transformOriginHorizontal,
-      >
+        }}>
         <List component="nav">
           {props.post.isSubmittedPost ? (
             <ListItem button onClick={deletePost}>
@@ -76,11 +70,11 @@ const PopWindow = props => {
             <ListItemText primary="Drafts" />
           </ListItem>
           <ListItem button>
-            <ListItemText primary="Trash" />
+            <ListItemText primary="Share" />
           </ListItem>
           <Divider light />
           <ListItem button>
-            <ListItemText primary="Spam" />
+            <ListItemText primary="Replay" />
           </ListItem>
         </List>
       </Popover>

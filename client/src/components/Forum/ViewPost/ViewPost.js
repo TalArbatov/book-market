@@ -80,6 +80,14 @@ class ViewPost extends React.PureComponent {
       this.setState({ ...currentState, isLoginModalOpen: true });
     }
   };
+  followUser = () => {
+    //console.log('test'); 
+    const followedUserID = this.props.forumReducer.currentPost.author._id;
+    const isFollow = true;
+    this.props.followUser(followedUserID, isFollow).then(res => {
+      console.log(res.data);
+    })
+  }
   render() {
     const commentsNum = this.props.forumReducer.currentComments.length;
 
@@ -93,6 +101,7 @@ class ViewPost extends React.PureComponent {
               post={this.props.forumReducer.currentPost}
               toggleCreateComment={this.toggleCreateComment}
               toggleSavePost={this.toggleSavePost}
+              followUser = {this.followUser}
             />
           </PostContent>
         
@@ -146,6 +155,7 @@ const mapDispatchToProps = dispatch => {
     fetchPost: _id => dispatch(ACTIONS.fetchPost(_id)),
     resetPostData: () => dispatch(ACTIONS.resetPostData()),
     toggleSavePost: (postID, saveType) => dispatch(ACTIONS.toggleSavePost(postID, saveType)),
+    followUser: (isFollow, followedUserID) => dispatch(ACTIONS.followUser(isFollow, followedUserID))
   };
 };
 

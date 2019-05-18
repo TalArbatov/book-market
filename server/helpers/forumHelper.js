@@ -71,7 +71,7 @@ const handlePostArrayLoggedIn = (posts, user) => {
 };
 const handlePostArrayLoggedOut = posts => {
   const newPosts = posts.map(post => {
-    return this.handlePostLoggedOut(post._doc);
+    return handlePostLoggedOut(post._doc);
   });
   const existingPosts = newPosts.filter(post => {
     return post != null;

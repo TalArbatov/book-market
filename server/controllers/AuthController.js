@@ -54,6 +54,8 @@ module.exports = {
                 commentsNum: 0,
                 submittedPosts: [],
                 savedPosts: [],
+                following: [],
+                followers: [],
               }
             });
             newUser.save((err, resUser) => {

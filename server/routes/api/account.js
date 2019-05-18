@@ -3,6 +3,11 @@ const path = require("path");
 const multer = require("multer");
 const User = require('mongoose').model('User');
 const fs = require('fs');
+const passport = require("passport");
+
+const jwtAuth = passport.authenticate("jwt", { session: false });
+
+
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, "./client/public/profile-images");
@@ -62,50 +67,28 @@ router.post("/uploadPhoto", upload2.single("testFile"), (req, res, next) => {
     else res.sendStatus(500);
   })
 });
+router.use('/follow', jwtAuth)
+router.post('/follow', (req,res,next) => {
+  // {isFollow, followingUserID, followedUserID}
+  const {isFollow, followingUserID, followedUserID} = req.body
+  console.log('followingUserID: ' + followingUserID);
+  console.log('followedUserID: ' + followedUserID);
 
-// router.get('/getImage/:_id', (req,res,next) => {
-//   User.findOne({_id: req.params._id}, (err, user) => {
-//     if(!err) res.send(user.profileImage.filename)
-//     else res.status(500).send({success: false})
-//   })  
-// })
-// router.post("/uploadPhoto", (req, res, next) => {
-//   // upload(req, res, err => {
-//   //   console.log(req);
-//   //   console.log("Request ---", req.body);
-//   //   console.log("Request file ---", req.file); //Here you get file.
-//   //   /*Now do where ever you want to do*/
-//   //   if (!err) return res.send(200).end();
-//   // });
-//   console.log('uploading..')
-//   upload2.single("file"),
-//   (req1, res1, next1) => {
-//     console.log(req1.file)
-//     const tempPath = req.file.path;
-//     const targetPath = path.join(__dirname, "./uploads/image.png");
-
-//     if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-//       fs.rename(tempPath, targetPath, err => {
-//         if (err) return handleError(err, res);
-
-//         res
-//           .status(200)
-//           .contentType("text/plain")
-//           .end("File uploaded!");
-//       });
-//     } else {
-//       fs.unlink(tempPath, err => {
-//         if (err) return handleError(err, res);
-
-//         res
-//           .status(403)
-//           .contentType("text/plain")
-//           .end("Only .png files are allowed!");
-//       });
-//     }
-//   }
-// ;
-
-// });
+  //add to followers to the user being followed
+  User.findOneAndUpdate({_id: followedUserID}, {$push: {'forum.followers': followingUserID}}, (err, res) => {
+    if(err) {
+      console.log(err)
+      res.send({success: false, err})
+    }
+  })
+  //add to the 'following' to the user that is following
+  User.findOneAndUpdate({_id: followingUserID}, {$push: {'forum.following': followedUserID}}, (err,res) => {
+    if(err) {
+      console.log(err)
+      res.send({success: false, err})
+    }
+  })
+  res.send({success: true})
+})
 
 module.exports = router;
