@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./components/App";
 import configStore from "./configStore";
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import * as ACTIONS from "./actions/userActions";
 import setAuthorizationToken from "./utils/setAuthorizationToken";
@@ -47,10 +47,10 @@ if (token != undefined && token !='undefined') {
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <HashRouter>
       <GlobalStyle />
       <App />
-    </BrowserRouter>
+    </HashRouter>
   </Provider>,
   document.getElementById("root")
 );

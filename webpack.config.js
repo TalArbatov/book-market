@@ -14,5 +14,10 @@ module.exports = {
       test: /\.js$/,
       exclude: /node_modules/
     }]
-  }
+  },
+  devServer: {
+    historyApiFallback: true,
+    contentBase: './',
+    hot: true
+  },
 }
