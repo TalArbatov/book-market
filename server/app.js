@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 //CONFIG mongoDB
-const DB_ADDRESS = process.env.DB_ADDRESS;
+const DB_ADDRESS = process.env.DB_ADDRESS_PRODUCTION;
 mongoose.connect(DB_ADDRESS, { useNewUrlParser: true }, err => {
   if (err) console.log(`DB_ERR: ${err}`);
   else console.log(`MONGO_DB: Connected to: ${DB_ADDRESS}`);
