@@ -37,7 +37,9 @@ const handlePostLoggedIn = (post, user) => {
   });
   console.log("isSavedPost: " + isSavedPost);
   newPost.isSavedPost = isSavedPost != null;
-} catch(e){}
+} catch(e){
+  return this.handlePostLoggedOut(post)
+}
   try {
     newPost.dateSaved = isSavedPost.dateSaved;
   } catch (e) {}
