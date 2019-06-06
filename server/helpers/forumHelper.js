@@ -23,6 +23,7 @@ const handlePostLoggedOut = post => {
 
 const handlePostLoggedIn = (post, user) => {
   // 1. add currentUserVote
+  try {
   let newPost = { ...post, currentUserVote: null };
   const userVote = post.voters.find(voter => {
     return voter._id == user._id;
@@ -36,6 +37,7 @@ const handlePostLoggedIn = (post, user) => {
   });
   console.log("isSavedPost: " + isSavedPost);
   newPost.isSavedPost = isSavedPost != null;
+} catch(e){}
   try {
     newPost.dateSaved = isSavedPost.dateSaved;
   } catch (e) {}

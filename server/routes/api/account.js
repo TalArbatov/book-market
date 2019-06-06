@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 
 const upload2 = multer({
   storage: storage,
-  limits: { fileSize: 100000000 }
+  limits: { fileSize: 10000 }
 });
 
 router.get('/fetchUser/:_id', (req,res,next) => {
