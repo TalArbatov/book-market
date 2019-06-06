@@ -65,19 +65,25 @@ const CommentHeader = props => {
   } = props.comment;
   const imagePath = config.PROFILE_IMG_PATH + props.comment.author.imagePath;
 
-  //console.log("imagePath" + imagePath);
+  const getImagePath = () => {
+    console.log('props');
+    console.log(props)
+    if (props.comment.author.imagePath === undefined)
+      return config.PROFILE_IMG_PATH + "/default.jpg";
+    else return config.BUCKET_ROOT_DOMAIN + props.comment.author.imagePath;
+  };
   return (
     <>
       <Wrapper>
         <SubWrapper>
           <AccountWrapper>
             <div style={{ paddingBottom: "30px", paddingRight: "15px" }}>
-              <VoteComment comment={props.comment}/>
+              <VoteComment comment={props.comment} />
             </div>
 
             <BadgeWrapper>
               <ImgWrapper>
-                <img src={imagePath} />
+                <img src={getImagePath()} />
               </ImgWrapper>
               <Information>{author.username}</Information>
             </BadgeWrapper>

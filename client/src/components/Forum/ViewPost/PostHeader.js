@@ -27,18 +27,18 @@ const Overlay = styled.div`
 
 
 const ImgWrapper = styled.div`
-  position: relative;
-  width: 100px;
-  height: 100px;
-  overflow: hidden;
-  border-radius: 50%;
-  display: inline-block;
-  justify-content: center;
-  img {
-    width: auto;
-    height: 100%;
-    position: absolute;
-  }
+position: relative;
+width: 100px;
+height: 100px;
+overflow: hidden;
+border-radius: 50%;
+display: inline-block;
+justify-content: center;
+img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
 `;
 const Title = styled.p`
   font-size: 1.3em;

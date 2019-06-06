@@ -51,7 +51,7 @@ const CreateComment = props => {
     const comment = {
       author: {
         _id: user._id,
-        imagePath: user.profileImage.filename,
+        imagePath: user.profileImage.url,
         firstName: user.firstName,
         lastName: user.lastName,
         username: user.username,
