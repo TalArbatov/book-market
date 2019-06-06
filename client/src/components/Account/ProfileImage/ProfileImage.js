@@ -11,7 +11,7 @@ import DisabledButtonWrapper from "../../shared/DisabledButtonWrapper";
 import HollowButtonWrapper from "../../shared/HollowButtonWrapper";
 
 const PROFILE_IMG_PATH = config.PROFILE_IMG_PATH;
-
+const BUCKET_ROOT_DOMAIN = config.BUCKET_ROOT_DOMAIN;
 Modal.setAppElement("#root");
 
 const customStyles = {
@@ -84,12 +84,15 @@ const AfterUploadWrapper = styled.div`
   position: relative;
 `;
 
+//formData may be deprecated after AWS refactor
+
 const defaultState = {
   formData: null,
   file: null,
   imgSrc: null,
   minValue: 0,
   minType: 'width',
+  file: null,
 };
 const AfterUploadContent = styled.div``;
 const ModalContent = styled.div``;
@@ -97,7 +100,7 @@ const ProfileImage = props => {
   const [getState, setState] = useState(defaultState);
 
   const sendFiles = () => {
-    props.uploadUserImage(getState.formData);
+    props.uploadUserImage(getState.file);
     setState(defaultState);
     closeModal();
   };
@@ -115,7 +118,7 @@ const ProfileImage = props => {
       // this.setState({
       //   imgSrc: [reader.result]
       // });
-      setState({ ...getState, formData, imgSrc: [reader.result] });
+      setState({ ...getState, formData, imgSrc: [reader.result] , file: files[0]});
     }.bind(this);
     console.log(url); // Would see a path?
     console.log(reader);
@@ -125,9 +128,9 @@ const ProfileImage = props => {
   const closeModal = () => {
     props.closeModal("profileImageModal");
   };
-  const imagePath =
-    PROFILE_IMG_PATH + props.userReducer.user.profileImage.filename;
-
+  // const imagePath =
+  //   PROFILE_IMG_PATH + props.userReducer.user.profileImage.filename;
+const imagePath = BUCKET_ROOT_DOMAIN + props.userReducer.user.profileImage.url
   const onImgLoad = e => {
     try {
       const height = e.target.offsetHeight;

@@ -5,6 +5,7 @@ import { PromiseProvider } from "mongoose";
 import config from "../../config.js";
 
 const PROFILE_IMG_PATH = config.PROFILE_IMG_PATH;
+const BUCKET_ROOT_DOMAIN = config.BUCKET_ROOT_DOMAIN;
 
 const Wrapper = styled.div`
 display:inline-block;
@@ -76,7 +77,7 @@ const AccountButtons = ({ user, authenticated, logout }) => {
           <Link to='/account'>
           <li>
             <ImgWrapper>
-              <img src={PROFILE_IMG_PATH + user.profileImage.filename} />
+              <img src={BUCKET_ROOT_DOMAIN + user.profileImage.url} />
             </ImgWrapper>
             <p>
               {user.firstName} {user.lastName}

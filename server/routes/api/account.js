@@ -17,15 +17,10 @@ const storage = multer.diskStorage({
   }
 });
 
-// const upload = multer({
-//   storage: storage,
-//   limits: { fileSize: 100000000 }
-// }).single("myImage");
 
 const upload2 = multer({
   storage: storage,
   limits: { fileSize: 100000000 }
-  // you might also want to set some limits: https://github.com/expressjs/multer#limits
 });
 
 router.get('/fetchUser/:_id', (req,res,next) => {
@@ -54,10 +49,7 @@ router.post("/uploadPhoto", upload2.single("testFile"), (req, res, next) => {
   console.log(req.body)
   const userID = require('jsonwebtoken').decode(req.body.token)._id;
   console.log('userID: ' + userID);
-  // const img = {
-  //   data: fs.readFileSync(req.file.path),
-  //   contentType: 'image/jpeg'
-  // }
+
   const profileImage = {
     filename: req.file.filename,
     dateUploaded: Date.now()
@@ -67,9 +59,21 @@ router.post("/uploadPhoto", upload2.single("testFile"), (req, res, next) => {
     else res.sendStatus(500);
   })
 });
+
+router.post('/uploadPhotoNew', jwtAuth, (req,res,next) => {
+  const {imageUrl, userID} = req.body;
+  const profileImage = {
+    url: imageUrl,
+    dateUploaded: Date.now()
+  }
+  User.findOneAndUpdate({_id:userID}, {$set: {'profileImage': profileImage}}, (err, doc) => {
+    if(!err) res.status(200).send({success:true});
+    else res.sendState(500)
+  })
+})
+
 router.use('/follow', jwtAuth)
 router.post('/follow', (req,res,next) => {
-  // {isFollow, followingUserID, followedUserID}
   const {isFollow, followingUserID, followedUserID} = req.body
   console.log('followingUserID: ' + followingUserID);
   console.log('followedUserID: ' + followedUserID);

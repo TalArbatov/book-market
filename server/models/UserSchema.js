@@ -9,7 +9,8 @@ const UserSchema = mongoose.Schema({
   username: { type: String, required: true },
   profileImage: {
     filename: { type: String, default: "default.jpg" },
-    dateUploaded: { type: Date }
+    dateUploaded: { type: Date },
+    url: {type: String}
   },
   password: { type: String, required: true },
   dateJoined: Date,

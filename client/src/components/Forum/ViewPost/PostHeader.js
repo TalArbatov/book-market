@@ -93,7 +93,15 @@ const PostHeader = props => {
     content,
     date
   } = props.post;
-  const imagePath = config.PROFILE_IMG_PATH + props.post.author.imagePath;
+
+  const getImagePath = () => {
+    if(props.post.author.imagePath === undefined)
+      return config.PROFILE_IMG_PATH + '/default.jpg'
+    else 
+      return config.BUCKET_ROOT_DOMAIN + props.post.author.imagePath;
+  }
+  
+   
 
  
   return (
@@ -111,7 +119,7 @@ const PostHeader = props => {
 
             <BadgeWrapper>
               <ImgWrapper>
-                <img src={imagePath} />
+                <img src={getImagePath()} />
                 <Overlay>
                   <HollowButtonWrapper>
                     <button onClick={() => props.followUser()}>

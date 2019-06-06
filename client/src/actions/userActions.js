@@ -158,13 +158,36 @@ export const fetchUserRequest = () => {
   }
 }
 
-export const uploadUserImage = (formData) => {
-  return (dispatch) => {
-    return axios.post("/api/account/uploadPhoto", formData).then(res => {
-      console.log(res.data);
-      const userID = require('jsonwebtoken').decode(localStorage.token)._id;
-      dispatch(fetchUser(userID));
-    });
+export const uploadUserImage = (file) => {
+  return (dispatch) =>  {
+    // return axios.post("/api/account/uploadPhoto", formData).then(res => {
+    //   console.log(res.data);
+    //   const userID = require('jsonwebtoken').decode(localStorage.token)._id;
+    //   dispatch(fetchUser(userID));
+    // });
+    const userID = require('jsonwebtoken').decode(localStorage.token)._id;
+    delete axios.defaults.headers.common["Authorization"]
+
+    axios.get('/api/upload/' + userID).then(res => {
+      const {url, key} = res.data;
+      //temp delete axios auth header before request to amazon
+      console.log(file.type)
+      axios.put(url, file, {
+        headers: {
+        // ContentType: file.type,
+         'Content-Type': file.type,
+         //'Referrer-Policy':'unsafe-url'
+        }
+      }).then(res => {
+        setAuthorizationToken(localStorage.token);
+        axios.post('/api/account/uploadPhotoNew', {imageUrl: key, userID}).then(res => {
+          console.log(res.data)
+        })
+        console.log(res.data)
+      }) 
+    })
+    
+    return {success: true}
   }
 }
 
@@ -173,16 +196,9 @@ export const discardUserImage = (formData) => {
     const userID = require('jsonwebtoken').decode(localStorage.token)._id;
 
     return axios.get("/api/account/discardUserImage/" + userID).then(res => {
-      //dispatch(discardUserImageSuccess());
       const userID = require('jsonwebtoken').decode(localStorage.token)._id;
       dispatch(fetchUser(userID));
 
     });
   }
 }
-
-// export const discardUserImageSuccess = () => {
-//   return {
-//     type: TYPES.DISCARD_USER_IMAGE_SUCCESS
-//   }
-// }

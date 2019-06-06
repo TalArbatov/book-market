@@ -132,7 +132,7 @@ router.route("/").post(jwtAuth, (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         username: user.username,
-        imagePath: user.profileImage.filename
+        imagePath: user.profileImage.url
       };
       const date = Date.now();
 
@@ -226,7 +226,7 @@ router.post("/fetchPostsByTopic/:topic", (req, res, next) => {
             res.send({ success: true, payload: existingPosts });
           }
         });
-      } else res.send({ success: false, payload: err2 });
+      } else res.send({ success: false, payload: err1 });
     });
   } else {
     //USER LOGGED OUT
