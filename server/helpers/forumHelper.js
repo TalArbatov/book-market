@@ -37,12 +37,10 @@ const handlePostLoggedIn = (post, user) => {
   });
   console.log("isSavedPost: " + isSavedPost);
   newPost.isSavedPost = isSavedPost != null;
-} catch(e){
-  return this.handlePostLoggedOut(post)
-}
-  try {
+ 
+
     newPost.dateSaved = isSavedPost.dateSaved;
-  } catch (e) {}
+ 
   // 3. add isSubmittedPost
   const isSubmittedPost = user.forum.submittedPosts.find(submittedPost => {
     return submittedPost.toString() == post._id;
@@ -56,7 +54,10 @@ const handlePostLoggedIn = (post, user) => {
   // 5. remove posts that are labled as deleted
   if (newPost.isDeleted) return null;
   return newPost;
-
+  }
+  catch(e){
+    return handlePostLoggedOut(post)
+  }
   // TODO: add userHandler to delete all sensitive data
   //delete user.forum.savedPosts
   //delete user.forum.submittedPosts
