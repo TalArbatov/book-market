@@ -28,22 +28,27 @@ const store = configStore();
 //  Authorization token is set in local Storage
 //  1. when user logins
 //  2. when user reloads the page
-const token = localStorage.token;
-console.log('inside index.js, token is: ');
-console.log(token)
-if (token != undefined && token !='undefined') {
-  console.log('now: ' + new Date(Date.now()))
-  console.log('exp: ' + new Date(require('jsonwebtoken').decode(token).exp * 1000));
-  const now = new Date(Date.now());
-  const exp = new Date(require('jsonwebtoken').decode(token).exp * 1000)
-  if(now > exp) {
-    console.warn('EXPIRED');
-  }
-  else {
-    store.dispatch(ACTIONS.loginSuccess(token));
 
-  }
-}
+//DEPRECATED - token sets in localhost on login
+//token attatches as authorization header on login + on reload inside componentdidmount
+//
+
+// const token = localStorage.token;
+// console.log('inside index.js, token is: ');
+// console.log(token)
+// if (token != undefined && token !='undefined') {
+//   console.log('now: ' + new Date(Date.now()))
+//   console.log('exp: ' + new Date(require('jsonwebtoken').decode(token).exp * 1000));
+//   const now = new Date(Date.now());
+//   const exp = new Date(require('jsonwebtoken').decode(token).exp * 1000)
+//   if(now > exp) {
+//     console.warn('EXPIRED');
+//   }
+//   else {
+//     store.dispatch(ACTIONS.loginSuccess(token));
+
+//   }
+// }
 
 ReactDOM.render(
   <Provider store={store}>

@@ -6,28 +6,35 @@ import Auth from './Auth/Auth';
 import Terms from './Auth/Terms';
 import Forum from './Forum/Forum'
 import Account from './Account/Account';
+import setAuthorizationToken from '../utils/setAuthorizationToken'
 const ContentWrap = styled.div`
   min-height:100vh;
   display:flex;
   justify-content:center;
   padding-top:40px;
 `;
-const App = props => {
-  return (
-    <div>
-      <Navbar />
-      <ContentWrap>
-        <Switch>
-          <Route exact path="/" component={() => <div>stasdasd asdaksld askldasda</div>} />
-          <Route path="/login" component={() => <Auth />} />
-          <Route path="/terms" component={() => <Terms />} />
-          <Route path="/forum" component={() => <Forum />} />
-          <Route path="/account" component={() => <Account />} />
 
-        </Switch>
-      </ContentWrap>
-    </div>
-  );
-};
+class App extends React.Component {
+  componentDidMount() {
+    if(localStorage.token) setAuthorizationToken(localStorage.token)
+  }
+  render() {
+    return (
+      <div>
+        <Navbar />
+        <ContentWrap>
+          <Switch>
+            <Route exact path="/" component={() => <div>stasdasd asdaksld askldasda</div>} />
+            <Route path="/login" component={() => <Auth />} />
+            <Route path="/terms" component={() => <Terms />} />
+            <Route path="/forum" component={() => <Forum />} />
+            <Route path="/account" component={() => <Account />} />
+  
+          </Switch>
+        </ContentWrap>
+      </div>
+    );
+  }
+}
 
 export default App;
